@@ -124,6 +124,22 @@ Here is where literature based discovery, LBD, comes in. LBD is the idea that we
 PubMed is a system to help with the organising and searching of life science and biomedical literature. It was created by the National Center for Biotechnology Information and contains the abstract and other key information of over 36 million publications. The primary feature of PubMed is MEDLINE, a system containing citations from selected journals and articles indexed by MeSH tags. \\
 
 \subsection{MeSH Tags}
+
+MeSH tags are a system of labels used to identify and categorise biomedical articles in the PubMed database. MeSH tags provide a standardized set of terms to describe the subject matter of articles. This ensures consistency in indexing and searching across different databases and publications and is controlled by the National Library of Medicine. They were made publically available in 1996 and have been key to searching and organising biomedical literature since. By keeping the scope of terms controlled, the National Library of Medicine can ensure that similar concepts are labelled in a consistent manner, irrespective of different cultures and languages across the world. This is very important in a globally researched subject to establish a standard format to research categorization. The MeSH database is regularly updated and expanded to reflect advances in biomedical research and changes in terminology. New terms are added, and existing terms are revised to ensure accuracy and relevance in a continuously evolving field. \\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/mesh_label.png}
+    \caption{image from: Integrating PubMed Label Hierarchy Knowledge into a Complex Hierarchical Deep Neural Network}
+    \label{fig:mesh}
+\end{figure}
+
+ The MeSH tag system is organised in a hierarchical tree structure. One advantage of this is it allows users to navigate through broader categories down to more specific terms. For example, the term "Diseases" is a broad category, under which you may find more specific terms like "Cardiovascular Diseases" and so on. With this, users can search for whatever level of specificity they require when exploring literature. Not only will this allow expert users to effectively filter down to exactly what they need, but also, less experienced users can use terms they are more familiar with to access larger sections of research. This process can even be conducted progressively, with users walking through the tree of terms to identify the best term for them to use. \\
+
+ By using this tree structure, MeSH also helps facilitate an easier and more consistent labelling of literature. It is easier to label data as a user does not need to select "Diseases" as well as "Cardiovascular Diseases". Instead, by selecting the most specific term that is relevant, they imply all the higher order terms that path directly to that term. For example, in  \Cref{fig:mesh}, selecting "Heart Failure" would implicitly label the paper with "Diseases", Cardiovascular Diseases" and "Heart Diseases". However, it would not label it with "Edema, Cardiac". This also keeps labelling of papers consistent, as researchers only need to select the most specific term for their paper, to then automatically assign a set of other relevant terms. Ensuring that all papers about "Heart Diseases" are also labelled with "Diseases" is not only important for consistent search results, but also for categorizing research for the purposes of using it as data. \\
+
+ MeSH tags are very useful for using as data due to their simple and connective nature.
+
 \begin{itemize}
     \item Introduction
     \item Creation and Structure
@@ -137,16 +153,6 @@ PubMed is a system to help with the organising and searching of life science and
     \item Evolving medical terminology
 \end{itemize}
 
-MeSH tags are a system of labels used to identify and categorise biomedical articles in the PubMed database. MeSH tags provide a standardized set of terms to describe the subject matter of articles. This ensures consistency in indexing and searching across different databases and publications and is controlled by the National Library of Medicine. They were made publically available in 1996 and have been key to searching and organising biomedical literature since. By keeping the scope of terms controlled, the National Library of Medicine can ensure that similar concepts are labelled in a consistent manner, irrespective of different cultures and languages across the world. This is very important in a globally researched subject The MeSH database is regularly updated and expanded to reflect advances in biomedical research and changes in terminology. New terms are added, and existing terms are revised to ensure accuracy and relevance in a continuously evolving field. 
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.6\linewidth]{images/mesh_label.png}
-    \caption{image from: Integrating PubMed Label Hierarchy Knowledge into a Complex Hierarchical Deep Neural Network}
-    \label{fig:mesh}
-\end{figure}
- 
-
 \section{Swanson's ABC System}
 
 \begin{figure}
@@ -156,7 +162,7 @@ MeSH tags are a system of labels used to identify and categorise biomedical arti
     \label{fig:open_closed}
 \end{figure}
 
-LBD is founded on Swanson's ABC approach. In this approach, if concepts A and B have an established relationship, and concepts B and C do too, then there may well be a transitive relationship between A and C. This is visualised at the top of Figure \ref{fig:open_closed} where A and B, and B and C are linked by proven association and so the link between A and C might be a potentially interesting discovery. In particular, this system is interested in circumstances where no relationship between A and C has been previously established as this might therefore be a new connection that could be discovered. An example of this being successfully implemented by Swanson himself would be his discovery of using fish oil to treat Raynard's disease. \\
+LBD is founded on Swanson's ABC approach. In this approach, if concepts A and B have an established relationship, and concepts B and C do too, then there may well be a transitive relationship between A and C. This is visualised at the top of \Cref{fig:open_closed} where A and B, and B and C are linked by proven association and so the link between A and C might be a potentially interesting discovery. In particular, this system is interested in circumstances where no relationship between A and C has been previously established as this might therefore be a new connection that could be discovered. An example of this being successfully implemented by Swanson himself would be his discovery of using fish oil to treat Raynard's disease. \\
 
 Open and closed discovery are the two main methods of Swanson's ABC system. Open discovery involves the user to have an identified concept A for which to discover possible C concepts. This can be done by identifying all the possible C concepts that are not linked to the original A but have at least one B concept in common with A. The connection between A and each C can then be evaluated by some metric and used to sort the possible C concepts in some way so that they can be returned to the user in meaningful manner. In this way, Open discovery can be used to answer the questions of what concepts are connected indirectly to a given concept and how they might compare to each other. \\
 
@@ -171,7 +177,7 @@ Closed discovery, on the other hand, seeks to answer entirely different question
     \label{fig:discovery_methods}
 \end{figure}
 
-Ultimately LBD depends on the proficiency of its discovery methods. Furthermore, for LBD to grow in use and to keep up with developing data analysis techniques, it must continue to improve the systems of discovery. Figure \ref{fig:discovery_methods} displays a rough outline of the progression of LBD systems and provides some umbrella concepts that allow the grouping of similar designs. There are have been several different approaches over the years which are worth exploring further. \\
+Ultimately LBD depends on the proficiency of its discovery methods. Furthermore, for LBD to grow in use and to keep up with developing data analysis techniques, it must continue to improve the systems of discovery. \Cref{fig:discovery_methods} displays a rough outline of the progression of LBD systems and provides some umbrella concepts that allow the grouping of similar designs. There are have been several different approaches over the years which are worth exploring further. \\
 
 \subsection{Co-occurence Approaches}
 
