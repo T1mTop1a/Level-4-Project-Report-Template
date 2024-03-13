@@ -470,34 +470,104 @@ To evaluate what the graph shown in \Cref{fig:roc_auc} tells us, we use the AUC,
 
 The GNN system that I had built now faced a performance problem, it was not very good. Not only was it not very good, it was not better than randomly guessing. On multiple runs the AUC hovered around 0.5, which is to say it has a 50-50 chance of guessing correctly if a link exists or not. \\
 
-To try to improve this performance I systematically walked through
-
+To try to improve this performance I systematically walked through fine tuning my hyper parameters. For my GNN. the three hyper parameters that I varied were:
+\\
 \begin{itemize}
-    \item pytorch
-    \item using tutorial
-    \item Converting to homogeneous
-    \item Negative sampling
-    \item bug fixing problems
-    \item Trying to improve performance
-    \item Sanity check
-    \item Implementing evaluation
+    \item \textbf{Epochs}, the number of cycles that the system iterates over the training data.
+    \item \textbf{hidden Channels}, the number of hidden units within the GNN.
+    \item \textbf{Learning Rate}, The step size at each iteration that the model makes towards a minimum loss function.\\
 \end{itemize}
+
+In the first round of optimisations, I experimented by altering the epochs the number of hidden channels. For each combination of values across these two hyper parameters, I ran five iterations of the system. Displayed in \Cref{tab:Optimisation_results} are the mean and standard deviation across these five results for each combination. \\
+
+\begin{table}[h]
+    \centering
+    \caption{Optimisation results}
+    \label{tab:Optimisation_results}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Epochs} & \textbf{Hidden Channels} & \textbf{Learning Rate} & \textbf{Run Mean} & \textbf{Standard Deviation} \\ \hline
+        5 & 32 & 0.001 & 0.5026 & 0.0044 \\ \hline
+        10 & 32 & 0.001 & 0.5044 & 0.0080 \\ \hline
+        3 & 32 & 0.001 & 0.5057 & 0.0101 \\ \hline
+        5 & 64 & 0.001 & 0.5052 & 0.0075 \\ \hline
+        10 & 64 & 0.001 &0.5011 & 0.0041 \\ \hline
+        3 & 64 & 0.001 & 0.4947 & 0.0074 \\ \hline
+        5 & 128 & 0.001 & 0.4985 & 0.0073 \\ \hline
+        10 & 128 & 0.001 & 0.4983 & 0.0083 \\ \hline
+        3 & 128 & 0.001 & 0.4976 & 0.0045 \\ \hline
+        5 & 16 & 0.001 & 0.5082 & 0.0108 \\ \hline
+        10 & 16 & 0.001 & 0.4959 & 0.0052 \\ \hline
+        3 & 16 & 0.001 & 0.4964 & 0.0051 \\ \hline
+    \end{tabular}
+\end{table}
+
+The mean of the standard deviations is 0.0069 and the mean of the means is 0.5007. From this we can take that almost every mean falls within the average standard deviation from the average mean. The only one outside of this range is with 5 epochs and 16 hidden channels with a mean of 0.5082. However this combinations own standard deviation is the largest at 0.0108, which means we cannot reliably say that it is a better combination than any other.\\
+
+Notably in the previous experiment, I did not vary the learning rate. I wanted to take the most interesting and promising combinations from the results displayed in \Cref{tab:Optimisation_results} and then vary the learning rate across these. This was done to reduce the time doing endless repetitions on combinations that were already under performing. The three that I progressed with were as follows. Firstly, the already mentioned 5 epochs and 16 hidden channels for the already discussed reasons. Secondly, 5 epochs and 32 channels was chosen due to its very low standard deviation in the hope that it would be more consistent. 10 epochs with 64 hidden channels had slightly less standard deviation but a lower mean and so was not selected. Finally, the combination of 5 epochs and 54 hidden channels was used due to it having a fairly high mean of 0.5052 but a much lower standard deviation than the first combination at 0.0075. \\
+
+\begin{table}[h]
+    \centering
+    \caption{Learning rate results}
+    \label{tab:Learnng_rate_results}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Epochs} & \textbf{Hidden Channels} & \textbf{Learning Rate} & \textbf{Run Mean} & \textbf{Standard Deviation} \\ \hline
+        5 & 32 & 0.01 & 0.4941 & 0.0099 \\ \hline
+        5 & 16 & 0.01 &  0.4975 & 0.0079 \\ \hline
+        5 & 64 & 0.01 & 0.4920 & 0.0040 \\ \hline
+        5 & 32 & 0.001 & 0.5026 & 0.0044 \\ \hline
+        5 & 16 & 0.001 & 0.5082 & 0.0108 \\ \hline
+        5 & 64 & 0.001 & 0.5052 & 0.0075 \\ \hline
+        5 & 32 & 0.0001 & 0.4963 & 0.0064 \\ \hline
+        5 & 16 & 0.0001 & 0.5004 & 0.0185 \\ \hline
+        5 & 64 & 0.0001 & 0.4961 & 0.0114 \\ \hline
+        5 & 32 & 0.00001 & 0.4993 & 0.0109 \\ \hline
+        5 & 16 & 0.00001 & 0.4982 & 0.0123 \\ \hline
+        5 & 64 & 0.00001 & 0.5043 & 0.0083 \\ \hline
+    \end{tabular}
+\end{table}
+
+From these results seen in \Cref{tab:Learnng_rate_results} we can see that three of the four highest means are from the original learning rate of 0.001. The only other mean in that group had a learning rate of 0.00001 and a mean of 0.5043 that puts it third. Accordingly, we can say that the original learning rate of 0.001 is the best to progress with. Despite that, the average standard deviation for this experiment is 0.0094, much higher than the last experiments 0.0069. This tells us that the variations in learning rate resulted in more extreme disparities in results. The average mean for these results is 0.4995, slightly below the mean of the last experiment. \\
+
+Going forwards I opted to use the most outstanding combination of 5 epochs, 16 hidden channels and 0.001 learning rate, as compared to the rest this combination had performed best. That said, non of these results had significantly improved the system, indicating that the under performance of the system is either due to the data not having any useful signals, or the GNN having some other systemic issues within it. \\
+
+\subsection{Sanity check}
+
+Evidently from the results in the previous section, there could be some underlying issues with the system I have created. To try and diagnose the problems facing this system I conducted some sanity checks to understand what was happening. \\
+
+The first thing I wanted to check was if the system could train to completely over-fit on a data set. Over-fitting in machine learning is when a model trains too much on a dataset, and therefore predicts that all other data must look exactly like the training set and anything else is wrong. \\
+
+To do this I created a simple dataset with eight positive edges and four negative edges. I set this dataset as both the training and the testing dataset. With this in place I then ran it at a number of different epoch numbers. First at the normal five it had barely learnt it and gave back a AOC of 0.333. Next, at 100 epochs, it produced a much improved AOC score of 0.71875. Finally at 200 epochs it produced a perfect AOC score of 1.0. This proves that the system can indeed learn from the data and perfectly over-fit a data set. However, a result here that really shocked me was how many epochs it took to learn this. I had expected that by 100 epochs, 20 times the normal amount, it should have learnt such a small dataset completely. This lead me to question, why on each pass of an epoch over the dataset was it learning so little. \\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/sanity_graph.png}
+    \caption{Simple graph to test sanity of system}
+    \label{fig:sanity_graph}
+\end{figure}
+
+The other sanity check I ran on this system was can it predict obvious missing links. To measure this I gave it a simple graph with clear patterns as can be seen in \Cref{fig:sanity_graph}. Here, the intention is that the GNN should recognise that node 6, if connected to node 0, should also be connected to node 1 and should not be connected to node 5. I ran this system at five epochs, 100 times to see if it would randomly guess the result or could understand the implications of the graph. The average AUC score over 100 iterations was 1.0. The GNN could perfectly understand the obvious missing links and predict what they should be every time. \\
+
+Therefore, these results indicate that the system is sane, it can over-fit to data it has seen before, given enough epochs, and it can predict obvious missing links consistently from simple graphs. However, there is still something strange happening. It seems to take the system a lot longer than it should to fit the data that it is seeing. This would imply that somehow, on an epoch to epoch basis, it is learning very slowly and not gaining much understanding of the data. \\
+
+To test if this system is just learning really slowly, I ran it with 500 epochs. This resulted in it giving me a AUC score of 0.5357, which is much higher than previous runs. This would indicate that it had learned from the data better at 500 epochs than it had at five. At 1000 epochs it went back down to 0.5175, which tells that at some stage between here and 500 the system started over fitting. At this point I was very late on in my project and did not have the time available to be able to fix this problem. I believe that the solution to this problem lies in figuring out how to get batching and data loaders working for this system. I had some tinkering with this but failed to make it work and so had to move on. \\
 
 \section{Matrix Factorisation}
-\begin{itemize}
-    \item using tutorial
-    \item Converting to homogeneous
-\end{itemize}
 
-\section{Compare Systems}
-\begin{itemize}
-    \item 
-\end{itemize}
+\subsection{Starting Building}
 
-\section{Combine Systems}
-\begin{itemize}
-    \item 
-\end{itemize}
+Having learnt my lessons from the implementation of the GNN, I began my implementation of the matrix factorisation system by following a tutorial on it. The tutorial of choice this time round was a blog post by Ethan Rosenthal recommended to me by my supervisor. Ethan had previously made posts about how to implement the matrix factorisation algorithms manually, but this post that I followed was a jubilant celebration of the tools that PyTorch provide to make the whole process much more straightforward. \\
+
+This implementation faced plenty of issues and bugs, but this time I was able to much easier overcome them. Once again I encountered similar problems of the system being designed for heterogeneous data, but this time I was able to resolve this issues much quicker thanks to my prior experiences. A key benefit of this system, as compared to the GNN, was it was much less complicated and more straightforward. This, combined with the lessons learned, enabled me to swiftly break through many of the issues facing me. Some of these other issues included, adding in negative sampling again, designating node ids and evaluating performance. \\
+
+\subsection{Performance Improvement}
+
+
+
+\subsection{Sanity check}
+
+
 
 \chapter{Evaluation} 
 
