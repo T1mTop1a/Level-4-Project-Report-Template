@@ -280,6 +280,14 @@ The objective of a graph neural network (GNN), is to try to learn hidden or gene
 \end{figure}
 
 In recommender systems, the objective is in completing edge-level tasks. That is to say, trying to establish, understand, and ultimately predict relationships between different nodes. An example of this can be seen in \Cref{fig:image_recogniton}, where the image is represented as a graph in order to understand it and even to understand the relationship between components with the image. This will allow complicated and data expensive things like images to be reduced down to very simple and small objects like a graph that can be much more easily processed.
+
+\section{Research Questions}
+
+\textbf{RQ1} How do link weight and link count compare and the combination of these compare in an ABC prediction system using a MeSH tag knowledge graph? \\
+
+\textbf{RQ2} How do the ABC, GNN, and matrix factorisation systems compare to each other? \\
+
+\textbf{RQ3} How do the various possible combinations of the ABC, GNN, matrix factorisation systems compare to each other and to these systems individually? \\
 %==================================================================================================================================
 \chapter{Analysis}
 \section{Document and Term Representation}
@@ -419,10 +427,6 @@ To ensure that these systems were producing the results I wanted I conducted a s
 \end{tabular}
 \end{table}
 
-\subsection{Evaluation Implementation}
-
-Hits@K was the evaluation method used to measure the prediction capabilities of these different sorting systems. Hits@k evaluates the accuracy of predicted links in Knowledge Graphs for missing link prediction by assessing the model's ranking of true versus false missing links. It gauges the percentage of correct predictions within the top k ranked links, with a higher Hits@k value signifying superior performance in missing link prediction. This assessment method is widely employed in link prediction tasks to gauge the efficacy of various models and algorithms. 
-
 \section{Graph Neural Network}
 
 \subsection{PyTorch}
@@ -530,8 +534,9 @@ Notably in the previous experiment, I did not vary the learning rate. I wanted t
 
 From these results seen in \Cref{tab:Learnng_rate_results} we can see that three of the four highest means are from the original learning rate of 0.001. The only other mean in that group had a learning rate of 0.00001 and a mean of 0.5043 that puts it third. Accordingly, we can say that the original learning rate of 0.001 is the best to progress with. Despite that, the average standard deviation for this experiment is 0.0094, much higher than the last experiments 0.0069. This tells us that the variations in learning rate resulted in more extreme disparities in results. The average mean for these results is 0.4995, slightly below the mean of the last experiment. \\
 
-Going forwards I opted to use the most outstanding combination of 5 epochs, 16 hidden channels and 0.001 learning rate, as compared to the rest this combination had performed best. That said, non of these results had significantly improved the system, indicating that the under performance of the system is either due to the data not having any useful signals, or the GNN having some other systemic issues within it. \\
+Going forwards from these results, I opted to use the most outstanding combination of 5 epochs, 16 hidden channels and 0.001 learning rate, as compared to the rest this combination had performed best. That said, non of these results had significantly improved the system, indicating that the under performance of the system is either due to the data not having any useful signals, or the GNN having some other systemic issues within it. \\
 
+Another system I tried to implement was early stopping. Early Stopping is a regularization method employed in deep neural networks, which halts training when further parameter updates fail to yield improvements on a validation set. It is used to prevent over-fitting without losing model learning. This is done by measuring the loss on the validation set as well as on the training set. Initially this loss will be decreasing as the system trains, however, when the system starts to over fit to the training set the loss on the validation set should start to increase. At this point the training of the system should be halted to prevent over-fitting. I implemented this system on my model, however it also did not make any meaningful changes. \\
 \subsection{Sanity check}
 
 Evidently from the results in the previous section, there could be some underlying issues with the system I have created. To try and diagnose the problems facing this system I conducted some sanity checks to understand what was happening. \\
@@ -563,13 +568,81 @@ This implementation faced plenty of issues and bugs, but this time I was able to
 
 \subsection{Performance Improvement}
 
+Once working, the matrix factorisation faced similar problems to the GNN with its AUC score sitting around 0.5. Therefore I conducted a similar experiment with the hyper parameters as I did with the GNN system. For this system at this point the hyper parameters I had to change were learning rate and hidden channels, which in this system were named vector factors. with these variables I ran my tests which resulted in it being clear that 64 vector factors and a learning rate of 0.001 worked best. However, despite this combination performing best, it still only had a mean AUC score of 0.5021, which is very close to randomly guessing. \\
 
+I discussed these results with my supervisor, who recommended a set of changes to improve the system. First of these was running for multiple epochs, he realised that the system I had built at this stage was not doing this obvious step. Secondly, my system was adding negative edges by concatenating them onto the positive edges. This meant that when the system walked through all the edges it would see all the positive edges and then all the negative edges. The consequences of this might be that this does something strange to the models calculations and throws it off. Therefore, the proposition was to use a data loader to shuffle the edges. An additional benefit of this data loader is that I could use it to also introduce batching to my system, a common practice in deep learning to help handle large datasets. Finally, he also recommended changing the loss function. I was using the same system as was used in the tutorial, MSELoss, but this function is used for non-binary classification. Therefore I switched over to the same system as my GNN, binary cross entropy. Binary cross entropy is the standard method of calculating loss in deep learning in binary systems and so therefore is the correct fit for this model.\\
+
+At this stage I should have conducted another round of hyper parameter optimization tests, particularly experimenting with batch sizes and epochs. However it was very late on in the project, and I did not have time. Conducting these experiments could have improved the system to some extent, but would probably not have significantly improved the system beyond randomly guessing. \\
+
+I implemented each of these systems into my matrix factorisation model successfully. However, when I ran my system again with these changes, it still was performing around an AUC of 0.5. Therefore, I once again went on to conduct a sanity check to understand what was happening with my system. \\
 
 \subsection{Sanity check}
 
+As with the GNN the first experiment in the sanity check was testing if the system could over-fit on a graph and predict it perfectly. When ran at only five epochs, the system did not perform very well at all. However, when ran 100 times at 50 epochs, it averaged an AUC score of 0.995. This demonstrates that given enough time, this system can over-fit and learn a training set near perfectly. At a 100 epochs, it was then scoring an average of 0.999, which is pretty much perfect. Interestingly, at neither of these thresholds did it get it right every single time, which indicates that this system still was not quite getting a perfect understanding of this data even at this many epochs. \\
 
+The second step of the sanity check was to measure the ability of the system to predict missing edges on an obvious graph. To do this I used the same graph as I did with my GNN, shown in \Cref{fig:sanity_graph}. I conducted this experiment again 100 times at the base epochs of five, resulting in a perfect AUC score across these runs of 1.0. This successfully demonstrates the my system can predict obvious edges and learn from the training set about trends in the data. Therefore, we can conclude that the system is sane as it can predict both obvious missing edges, and over-fit to a training set. \\
 
 \chapter{Evaluation} 
+
+\section{Research Question 1}
+
+The first research question (RQ) is, how do link weight and link count compare and the combination of these compare in an ABC prediction system using a MeSH tag knowledge graph? To answer this I used Hits@K to evaluate and compare three different sorting systems; weight of edges, number of edges, combination of weight and number of edges. \\
+
+\subsection{Hits@K}
+
+Hits@K is the evaluation method used to measure the prediction capabilities of these different sorting systems. Hits@k evaluates the accuracy of predicted links in knowledge graphs for missing link prediction by assessing the model's ranking of true versus false missing links. It gauges the percentage of correct predictions within the top k ranked links, with a higher Hits@k value signifying superior performance in missing link prediction. This assessment method is widely employed in link prediction tasks to gauge the efficacy of various models and algorithms. \\
+
+\subsection{Process}
+
+To compare the three approaches I will evaluate them across four k values, one, five, ten, and twenty. These values will be calculated from making predictions across 100 nodes and averaging the results. The data used for this experiment will be the standard 1000 node sub graph which is used in other experiments in this paper. Furthermore, the standard deviation for each k-value, for each sorting method, will be calculated too. \\
+
+\subsection{Results}
+
+\begin{table}[h]
+\centering
+\caption{RQ1 Results}
+\label{tab:rq1_results}
+\begin{tabular}{|c|l|l|l|l|l|l|}
+\hline
+& \multicolumn{2}{|c|}{\textbf{Weight Only}}  & \multicolumn{2}{c|}{\textbf{Count Only}} & \multicolumn{2}{|c|}{\textbf{Weight and Count}} \\ \hline
+\textbf{K value} & \textbf{Hit Rate} & \textbf{Std Deviation} & \textbf{Hit Rate} & \textbf{Std Deviation} & \textbf{Hit Rate} & \textbf{Std Deviation}\\ \hline
+1 & 0.17 & 0.0038 & 0.2 & 0.0040 & 0.19 & 0.0039\\ \hline
+5 & 0.162 & 0.0018 & 0.202 & 0.0022 & 0.164 & 0.0019\\ \hline
+10 & 0.16 & 0.0015 & 0.192 & 0.0016 & 0.166 & 0.0015 \\ \hline
+20 & 0.145 & 0.0012 & 0.1655 & 0.0016 & 0.146 & 0.0012\\ \hline
+Mean & 0.159 &  & 0.19 &  & 0.167 & \\ \hline
+\end{tabular}
+\end{table}
+
+The results from this experiment can be seen in \Cref{tab:rq1_results}. From these findings there is a clear best approach. Using count only not performed best overall, but also across every single K value. Weight only was the approach which had the worst performance with the combination of the two sitting between them. Interestingly, the combination of the two performed much closer to weight only than to count only. This would indicate that the weight has a significantly greater effect on this system than the counts do, and so warps the results closer to weight only. \\ 
+
+Therefore, the answer to this research question is that edge count is a better metric to use in link prediction on this data set than link weight or a combination of these two. \\
+
+\section{Research Question 2}
+
+\section{Research Question 2}
+
+The second research question (RQ) is, how do the ABC, GNN, and matrix factorisation systems compare to each other? To compare these systems ran all three of them on a common data set and evaluated them all with AUC score and my own system of evaluating their top scoring edges in the predictions. \\
+
+\begin{itemize}
+    \item what metrics did I use to compare them to each other
+    \item how did I compare them?
+    \item results
+    \item discussion
+\end{itemize}
+
+\section{Research Question 3}
+
+\section{Research Question 3}
+
+The third research question (RQ) is, How do the various possible combinations of the ABC, GNN, matrix factorisation systems compare to each other and to these systems individually? Between these three systems there will be four combinations, ABC and GNN, GNN and matrix factorisation, matrix factorisation and ABC, and all three of them combined. I will use the same secondary system I used to evaluate RQ2 to compare these systems to each other and to the individual systems. \\
+
+\begin{itemize}
+    \item what metrics did I use to evaluate the combinations
+    \item how did I combine them?
+    \item results
+    \item discussion
+\end{itemize}
 
 \chapter{Conclusion}    
 
