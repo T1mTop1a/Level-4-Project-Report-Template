@@ -283,11 +283,11 @@ In recommender systems, the objective is in completing edge-level tasks. That is
 
 \section{Research Questions}
 
-\textbf{RQ1} How do link weight and link count compare and the combination of these compare in an ABC prediction system using a MeSH tag knowledge graph? \\
+\textbf{RQ1:} How do link weight and link count compare and the combination of these compare in an ABC prediction system using a MeSH tag knowledge graph? \\
 
-\textbf{RQ2} How do the ABC, GNN, and matrix factorisation systems compare to each other? \\
+\textbf{RQ2:} How do the ABC, GNN, and matrix factorisation systems compare to each other, when predicting on a MeSH tag knowledge graph? \\
 
-\textbf{RQ3} How do the various possible combinations of the ABC, GNN, matrix factorisation systems compare to each other and to these systems individually? \\
+\textbf{RQ3:} How do the various possible combinations of the ABC, GNN, and matrix factorisation systems compare to each other and to each of these systems individually? \\
 %==================================================================================================================================
 \chapter{Analysis}
 \section{Document and Term Representation}
@@ -450,13 +450,14 @@ To evaluate the performance of this system I used the area under the curve (AUC)
 The TPR is defined as: 
 
 \begin{center}
-    $\text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}$ \\
+    $\text{TPR} = \dfrac{\text{TP}}{\text{TP} + \text{FN}}$ \\
 \end{center}
 
+\vspace{10mm} 
 And the FPR is defined as: 
 
 \begin{center}
-    $\text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}$
+    $\text{FPR} = \dfrac{\text{FP}}{\text{FP} + \text{TN}}$
 \end{center}
 
 The meaning of these variables is as follows. TP represents the true positives, FN represents the false negatives, FP represents false positives and TN represents true negatives. An ROC curve depicts the relationship between TPR and FPR across various classification thresholds. Decreasing the classification threshold results in more items being classified as positive, thereby elevating both False Positives and True Positives. \\ 
@@ -594,25 +595,27 @@ Hits@K is the evaluation method used to measure the prediction capabilities of t
 
 \subsection{Process}
 
-To compare the three approaches I will evaluate them across four k values, one, five, ten, and twenty. These values will be calculated from making predictions across 100 nodes and averaging the results. The data used for this experiment will be the standard 1000 node sub graph which is used in other experiments in this paper. Furthermore, the standard deviation for each k-value, for each sorting method, will be calculated too. \\
+To compare the three approaches I will evaluate them across four k values, one, five, ten, and twenty. These values will be calculated from making predictions across 100 nodes and averaging the results. The data used for this experiment will be the standard 1000 node sub graph which is used in other experiments in this paper.\\
 
 \subsection{Results}
 
 \begin{table}[h]
-\centering
-\caption{RQ1 Results}
-\label{tab:rq1_results}
-\begin{tabular}{|c|l|l|l|l|l|l|}
-\hline
-& \multicolumn{2}{|c|}{\textbf{Weight Only}}  & \multicolumn{2}{c|}{\textbf{Count Only}} & \multicolumn{2}{|c|}{\textbf{Weight and Count}} \\ \hline
-\textbf{K value} & \textbf{Hit Rate} & \textbf{Std Deviation} & \textbf{Hit Rate} & \textbf{Std Deviation} & \textbf{Hit Rate} & \textbf{Std Deviation}\\ \hline
-1 & 0.17 & 0.0038 & 0.2 & 0.0040 & 0.19 & 0.0039\\ \hline
-5 & 0.162 & 0.0018 & 0.202 & 0.0022 & 0.164 & 0.0019\\ \hline
-10 & 0.16 & 0.0015 & 0.192 & 0.0016 & 0.166 & 0.0015 \\ \hline
-20 & 0.145 & 0.0012 & 0.1655 & 0.0016 & 0.146 & 0.0012\\ \hline
-Mean & 0.159 &  & 0.19 &  & 0.167 & \\ \hline
-\end{tabular}
+    \centering
+    \caption{RQ1 Results}
+    \label{tab:rq1_results}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    & \textbf{Weight Only} & \textbf{Count Only} &\textbf{Weight and Count} \\ \hline
+    \textbf{K value} & \textbf{Hit Rate} & \textbf{Hit Rate} & \textbf{Hit Rate}\\ \hline
+    1 & 0.17 & 0.2 & 0.19 \\ \hline
+    5 & 0.162 & 0.202 & 0.164\\ \hline
+    10 & 0.16 & 0.192 & 0.166 \\ \hline
+    20 & 0.145 &0.1655 & 0.146\\ \hline
+    Mean & 0.159 & 0.19 & 0.167 \\ \hline
+    \end{tabular}
 \end{table}
+
+\subsection{Discussion}
 
 The results from this experiment can be seen in \Cref{tab:rq1_results}. From these findings there is a clear best approach. Using count only not performed best overall, but also across every single K value. Weight only was the approach which had the worst performance with the combination of the two sitting between them. Interestingly, the combination of the two performed much closer to weight only than to count only. This would indicate that the weight has a significantly greater effect on this system than the counts do, and so warps the results closer to weight only. \\ 
 
@@ -620,29 +623,89 @@ Therefore, the answer to this research question is that edge count is a better m
 
 \section{Research Question 2}
 
-\section{Research Question 2}
+The second research question (RQ) is, how do the ABC, GNN, and matrix factorisation systems compare to each other, when predicting on a MeSh tag knowledge graph? To compare these systems ran all three of them on a common data set and evaluated them all with AUC score and my own system of evaluating their top scoring edges in the predictions. \\
 
-The second research question (RQ) is, how do the ABC, GNN, and matrix factorisation systems compare to each other? To compare these systems ran all three of them on a common data set and evaluated them all with AUC score and my own system of evaluating their top scoring edges in the predictions. \\
+\subsection{Data}
 
-\begin{itemize}
-    \item what metrics did I use to compare them to each other
-    \item how did I compare them?
-    \item results
-    \item discussion
-\end{itemize}
+Each of these systems were trained on the same data set. A sub-graph of 1000 nodes taken from the before 2008 graph, the same as used in RQ1 and RQ3. this ensures that each system was given the same information for learning about the data so as to create a level playing field between them. \\
 
-\section{Research Question 3}
+The test data set was created more particularly. I wanted to create a reduced data set that I could then also use in RQ3 so as to allow the data to be comparable between the two experiments. I wanted to measure how well these systems could perform on nodes that they have a lot of information about. nodes they have seen a lot of edges of, and also have a lot of positive edges in the post 2008 data set. This would allow me to evaluate how these systems perform when given meaningful information to work with. \\
+
+To do this, I sorted the both graphs by how many edges each node has, the degree of that node. I walked through the top 100 degree nodes on each graph to find nodes were in common between them. For each of these nodes, I constructed a graph containing all the edges from that node to nodes that were non-existent in the before 2008 graph. This meant that each graph was overwhelmingly more negative than positive in edges. However, this was still the best ratio I could produce this way out of the nodes in the graph. \\ 
+
+The result of this was across three runs, six graphs were created each time, with an average of 299 total edges and nine positive edges each. \\
+
+\subsection{Metrics}
+
+The first metric I used to compare the performance of these systems against each other was the previously introduced AUC score. Since this is a well established metric used across deep learning research, it makes sense to use as a metric that can be easily understood by readers and compared to other research. The second metric I used is one of my own creation. My main motivation for using it is it is a better way to evaluate the combination of systems in RQ3. However I also used it here, as it can be used to compare the systems individually so as to give further context to my discussion of results in RQ3. \\ 
+
+The secondary metric is similar in concept to the Hits@K metric previously discussed. It represents how well in a top k number of values has the system predicted positive results. Instead of representing this value as a ratio of those k values, it calculates the ratio of positive results in the data set as a whole and compares to this. Therefore, if the system is randomly guessing, a score of 1.0 would be expected, as for each positive result expected in the k terms, the system produces one. A score less than 1.0 indicates that the system is worse than randomly guessing, and is somehow systematically ranking positive values lower than negative ones. On the other hand, a score greater than 1.0 indicates that the system is ranking positive results on average higher than a random guessing system would. The score value, at any level, will give a simple comparison to a randomly guessing system. A score of 2.0 means the system is twice as good as a random one, and a score of 0.5 means the system is half as good as a randomly guessing system. This can be represented as follows.\\
+
+\begin{center}
+    $\text{Score} = \dfrac{\left ( \dfrac{\text{Correct Guesses}}{\text{Total Guesses}}\right )}{\left ( \dfrac{\text{Positive values}}{\text{Total values}}\right )}$ 
+\end{center}
+
+The purpose of evaluating only the top k guesses, is because this is a prediction system. The user is not interested in the bottom ranking values, but only in the ones that are highest ranked by the system. It is intended to be used for discovery of possible links between concepts. Therefore the highest ranking edges in the prediction are the ones of most value to the user, and so the ones most worth evaluating. \\
+
+\subsection{Results}
+
+\begin{table}[h]
+    \centering
+    \caption{RQ2 AUC score}
+    \label{tab:rq2_auc}
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    & \multicolumn{3}{|c|}{AUC Scores} & \\ \hline
+    \textbf{System} & \textbf{Run 1} & \textbf{Run 2} & \textbf{Run 3} & \textbf{Mean}\\ \hline
+    ABC & 0.778 & 0.735 & 0.617 & 0.710 \\ \hline
+    GNN & 0.671 & 0.557 & 0.547 & 0.592 \\ \hline
+    Matrix Factorisation & 0.556 & 0.543 & 0.400 & 0.500 \\ \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{RQ2 Relative Score Averages}
+    \label{tab:rq2_rsa}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    & \multicolumn{5}{|c|}{K value} & \\ \hline
+    \textbf{System} & \textbf{1} & \textbf{10} & \textbf{20} & \textbf{50} & \textbf{100} & \textbf{Mean}\\ \hline
+    ABC & 10.36 & 3.99 & 3.36 & 2.40 & 1.85 & 4.39\\ \hline
+    GNN & 3.11 & 3.07 & 2.38 & 1.42 & 1.36 & 2.27\\ \hline
+    Matrix Factorisation & 1.26 & 1.09 & 1.21 & 0.78 & 0.91 & 1.05\\ \hline
+    Mean & 4.91 & 2.72 & 2.33 & 1.53 & 1.37 & \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Discussion}
+
+Firstly, the AUC scores in \Cref{tab:rq2_auc} paint a very clear picture of the three systems. The ABC system comfortably out performed the other systems with an average score of 0.71, which is higher than any other system's highest score. Another interesting phenomenon in these results is that all three of them performed best on run 1 and worst on run 3. This means that as one system finds a graph more difficult to predict, so to do others, indicating that they might be evaluating them using similar metrics. The purpose of building the machine learning systems is that despite taking longer to train, they are supposed to be able to out-perform traditional algorithmic systems like ABC. However, as mentioned before, ABC was clear of the other two systems. Trailing in last place was matrix factorisation which only just broke even with a randomly guessing system in AUC score. \\
+
+The trends seen in the AUC scores are supported in the relative scores \Cref{tab:rq2_rsa}. Once again, the ABC system performs best on average and the matrix factorisation system is worst, being very close to a randomly guessing system. Some interesting outliers in these results, such as the ABC system having a score of 10.36 at a k-value of 1. On further exploration of this result I found that of the 18 different graphs it evaluated, the edge it ranked top was right, five times, as compared to only once by each of the other two systems. This makes for a rather exaggerated relative score, but is still very useful as the top returned result is the one that researchers will be most interested in. As the k value increased, so to did the relative scores decrease on average. This could be due to two possible reasons, the data sample is getting larger and so maybe the metric is normalising closer to how the systems are actually performing, or it could be that the systems are better at guessing the more obvious edges than getting the more difficult shouts right, and so perform better if a smaller slice of the results is taken. If the first of those two is true we would expect to see, among the smaller k-values, results both above and below the scores at larger k-values. However, it is a fairly consistent decrease as the k-values increase, indicating that the second of the two possibilities is more plausible. \\
+
+To answer the question, both metrics conclude that ABC is the best of the three systems, and that matrix factorisation is, not only the worst, but also not any better than a randomly guessing system. \\
 
 \section{Research Question 3}
 
 The third research question (RQ) is, How do the various possible combinations of the ABC, GNN, matrix factorisation systems compare to each other and to these systems individually? Between these three systems there will be four combinations, ABC and GNN, GNN and matrix factorisation, matrix factorisation and ABC, and all three of them combined. I will use the same secondary system I used to evaluate RQ2 to compare these systems to each other and to the individual systems. \\
 
-\begin{itemize}
-    \item what metrics did I use to evaluate the combinations
-    \item how did I combine them?
-    \item results
-    \item discussion
-\end{itemize}
+\subsection{Data}
+
+Once again, each of these systems were trained on the same data set of a sub-graph of 1000 nodes taken from the before 2008 graph, the same as used in RQ1 and RQ2. For the test data, the same set of node graphs were created and used as in RQ2. Across the three runs of this evaluation, six graphs were created each time, with an average of 299 total edges and 12 positive edges each. \\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/Combination_venn.png}
+    \caption{Venn Diagram of system combinations}
+    \label{fig:venn}
+\end{figure}
+
+To get the combination of these systems, I took, for each k-value, the common ground of the predictions from the involved systems. I labelled each of these combinations C1 to C4, as can be seen in \Cref{fig:venn}. Score predictions of each predicted edge were not combined between system because the ABC system scored edges very differently to the other two systems, which would create an unbalanced combination system as seen in the results of RQ1. Therefore, the overlap between the top k predictions was taken instead, which further leans into the systems being used as discovery systems. \\
+
+\subsection{Metrics}
+
+Because of the vastly reduced datasets caused by only taking the overlap of the top k predictions, an overall evaluation using AUC is no longer useful. Therefore, the only metric that will be used to evaluate these combinations is the relative score metric defined in for RQ2. 
 
 \chapter{Conclusion}    
 
