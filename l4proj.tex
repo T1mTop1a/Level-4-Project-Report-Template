@@ -11,27 +11,20 @@
 
 %==============================================================================
 %% METADATA
-\title{Level 4 Project Report Template}
-\author{John H. Williamson}
-\date{September 14, 2018}
+\title{Exploring using MeSH tags for Literature Based Discovery}
+\author{Timothy R Baldock}
+\date{March 22, 2024}
 
 \maketitle
 
 %==============================================================================
 %% ABSTRACT
 \begin{abstract}
-    Every abstract follows a similar pattern. Motivate; set aims; describe work; explain results.
-    \vskip 0.5em
-    ``XYZ is bad. This project investigated ABC to determine if it was better. 
-    ABC used XXX and YYY to implement ZZZ. This is particularly interesting as XXX and YYY have
-    never been used together. It was found that  
-    ABC was 20\% better than XYZ, though it caused rabies in half of subjects.''
-    \begin{itemize}
-        \item what is LBD?
-        \item what will this project do?
-        \item what is the result of this project?
-    \end{itemize}
+    
+    It is increasingly difficult for researchers to keep up with the rate at which research is being published. In this project I have tested  machine learning techniques for the automated capture of literature content and prediction of potential scientific development to support the researcher to develop research hypothesis. In particular, in this project I investigated using a knowledge graph of PubMed MeSH tags to enable link prediction of potential connections between biomedical concepts. Three prediction systems; Swanson's ABC system, a graph neural network and matrix factorisation, were compared and combined to explore how this data can be used for literature based discovery. The results established that the most effective  system was the implementation of Swanson's ABC system, although the combination of this and the graph neural network showed promise at being able to extract additional information. 
+
 \end{abstract}
+
 
 %==============================================================================
 
@@ -44,8 +37,8 @@
 % Please note that you are under no obligation to sign 
 % this declaration, but doing so would help future students.
 %
-\def\consentname {Timothy Baldock} % your full name
-\def\consentdate {30 January 2024} % the date you agree
+\def\consentname {Timothy R Baldock} % your full name
+\def\consentdate {22 March 2024} % the date you agree
 %
 \educationalconsent
 
@@ -86,42 +79,122 @@
 \pagenumbering{arabic} 
 
 \section{Motivation}
-\begin{itemize}
-    \item Scale of research
-    \item Cost of machine learning
-\end{itemize}
+
+\subsection{Increasing Research Rate}
+
+The global research rate is increasing. This is in part fuelled by the global spending on research and development that has increased to 2.4 trillion dollars in 2020 from only 675 billion in 2000 as reported by the Congressional Research \cite{congress} (2022). As research across the world continues to grow, so too does our accumulated knowledge grow. According to \cite{bornmann_growth_2015}, the rate of research increased exponentially between 1980 and 2013, with a growth rate of about 3\% \textit{per annum} for global scientific publications in this time frame. With an ever-growing repository of information it becomes more difficult to accumulate expertise in a field. This is further exacerbated by the increasing rate of research which also makes it even more difficult for individual experts to stay up to date with developments in their field. \\ 
+
+The result of this, is a narrowing of expertise as discussed by \cite{swanson_fish_1986}. To become expert in a field requires increasingly more time to be spent on a narrower area of research. A consequence of this is that individuals can benefit less from their wider understanding of their field as not only can they spend less time learning about the broader subject but also the required time taken to properly develop knowledge in other parts of their subject increases.\\ 
+
+\subsection{Literature Based Discovery}
+
+Literature based discovery (LBD) seeks to address this issue by creating predictive systems to identify undiscovered links that might be worth exploring. The existence of such undiscovered links was established by \cite{swanson_fish_1986}, when he determined that fish oil relieved Raynaud's Syndrome. His discovery system used the connection between dietary fish oil reducing blood viscosity and that high blood viscosity exacerbates Raynaud's Syndrome to propose a link between the two. Prior to this, fish oil had not been discovered as a treatment for Raynaud's Syndrome, despite all the necessary linking research already existing. Therefore, his system of LBD enabled the discovery this treatment. \\
+
+There could be many similar connections between concepts like this, in clinical and biological research, that have never been discovered, because the right combination of papers have not been read together by the right person. Many different systems have been designed and implemented to approach identifying these links. These systems can vary in what data they use to represent these concepts, how they try to define connections and how they rate different connections to scoring, sorting and evaluation. \\
 
 \section{Aims}
-\begin{itemize}
-    \item Explore different aspects of MeSH tags in lbd
-    \item Give pointers on what variations are useful
-\end{itemize}
 
-\section{Dissertation Outline}
-\begin{itemize}
-    \item Background
-    \item Analysis
-    \item Implementation
-    \item Evaluation
-    \item Conclusion
-\end{itemize}
+This project aims to explore how MeSH tags \citep{mesh_home}, a labelling system for biomedical research papers, can be used for LBD. First, this project will create a knowledge graph to represent the co-occurrence of MeSH tags in articles. The resources used in other research is not available for this project, so this project will not seek to compare results with external results. Instead, this project will implement a selection of systems using this knowledge graph to compare how they perform, and determine which makes the most accurate predictions using this data. Furthermore, the combination of these systems will be explored to see if this can improve the predictions and extract further insights from the data. \\ 
 
 %==================================================================================================================================
 \chapter{Background}
 
-\section{Increase in Research Rate}
+\section{Literature Based Discovery}
 
-The global research rate is increasing. This is in part fueled by the global spending on research and development has increased to 2.4 trillion dollars in 2020 from only 675 billion in 2000 as reported by the Congressional Research Service (2022). As research across the world continues to grow, so to does our accumulated knowledge grow. According to Bornmann and Lutz (2015) \textbf{ref}, the rate of research increased exponentially between 1980 and 2013, with a growth rate of about 3\% for global scientific publications in this time frame. With an ever growing repository of information it becomes more difficult to accumulate expertise in a field. This is further exacerbated by the increasing rate of research which also makes it trickier for individual experts to stay up to date with developments in their field. \\ 
+LBD is the idea that we can use the vast and growing database of research to generate hypothesis for future work. The work done by \cite{henry_literature_2017}, provides many examples of LBD's applications and achievements including identifying potential treatments for cancer and finding treatments for cataracts. Biomedical research is the field in which LBD is most utilised, but there are numerous instances of its use in other fields. LBD is also used beyond biomedical research, for example the oceanographic climate science by \cite{aamot_literature-based_2014} is a case of LBD being applied to another field with its application in studying climate change. Given the increasing quantity and funding of research, being able to effectively generate hypothesis by linking different areas of expertise will only become more important.\\  
 
-The result of this, is a narrowing of expertise as discussed by Swanson et al. \textbf{ref}. To become expert in a field requires increasingly more time to be spent on a narrower area of a field. A consequence of this is that individuals can benefit less from their wider understanding of their field as not only can they spend less time learning about the broader subject but also the required time taken to properly develop knowledge in other parts of their field increases.\\ 
+\section{Knowledge Graph}
 
-\section{Introduction of Literature Based Discovery}
+One way to represent this data is as a knowledge graph. These represent data by defining it as a series of entities and relationships. For example, a family could be represented this way as seen in \Cref{fig:knowledge_graph}, with the members as nodes in the graph and their relationships as edges. More information could be added here too, maybe the time they've had this relationship could be added to each edge, or the height of the member could be added to the node. In this way, can a wide array of data be represented in a standardised system that has common rules and features. If a graph has multiple types of edges, as in \Cref{fig:knowledge_graph}, or multiple types of node, like if each person was categorised male or female, then a graph is heterogeneous. If a graph has only one type of node and one type of edge then instead it is homogeneous. This type of graph can still have values attached to the edges as weights, but it cannot attach further labels without becoming heterogeneous. \\ 
 
-Here is where literature based discovery, LBD, comes in. LBD is the idea that we can use this vast and ever growing database to generate hypothesis for future work. Henry and McInnes \textbf{ref} provide many examples of LBD's applications and achievements including identifying potential treatments for cancer and finding treatments for cataracts. Biomedical research is the field in which LBD is most utilised, but there are numerous instances of its use in other fields. Aamot's work with using it for oceanographic climate science is a case of LBD being applied to another field with its application in studying climate change. Given the increasing quantity and funding of research, being able to effectively generate hypothesis by linking different areas expertise will only become more crucial.\\  
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/knowledge_graph.png}
+    \caption{Example knowledge graph of a family}
+    \label{fig:knowledge_graph}
+\end{figure}
 
-\section{PubMed}
+\section{Link Prediction}
 
-PubMed is a system to help with the organising and searching of life science and biomedical literature. It was created by the National Center for Biotechnology Information and contains the abstract and other key information of over 36 million publications. The primary feature of PubMed is MEDLINE, a system containing citations from selected journals and articles indexed by MeSH tags. \\
+TO utilise this data structure for this problem, What does LBD mean in the context of a knowledge graph. LBD seeks to discover links between concepts that have sound logic as to why they might exist but have not yet been explored or proven yet. Concepts should therefore be represented as nodes and if there is a connection between these concepts, then an edge should exist between the nodes in question. An LBD system will then seek to use the information contained in the graph to predict new edges, that do not exist in the graph but might actually exist between the concepts. A notable feature of these link prediction systems is that predicted edges that do not exist yet are not necessarily wrong, they are just undiscovered as of yet. However, when evaluating link prediction systems, a system that successfully guesses more existing edges is therefore a system that can be trusted to better evaluate non-existing edges. These features of link prediction therefore pose three key problems for systems to address: \\
+
+\begin{itemize}
+    \item \textbf{Nodes,} what constitutes a concept, and what further information about them should be attached to the node.
+    \item \textbf{Edges,} how to establish a relationship between two concepts, and how to determine if that relationship is meaningful or not.
+    \item \textbf{Predictions,} How to use the information of these nodes and edges to make predictions about what new edges would be worth researching. \\
+\end{itemize}
+
+There is much existing research that explores these points. Although not all of this research uses knowledge graphs to structure the data, the approaches taken to defining concepts, establishing relationships between them and making predictions on undiscovered relationships is crucial to developing a system for this project. \\
+
+\section{Discovery Methods}
+
+\subsection{Swanson's ABC System}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/abc_open_closed.png}
+    \caption{Examples of ABC connections, Open discovery and Closed discovery. \citep{bhasuran_literature_2023}}
+    \label{fig:open_closed}
+\end{figure}
+
+LBD is founded on Swanson's ABC approach. In this approach, if concepts A and B have an established relationship, and concepts B and C do too, then there may well be a transitive relationship between A and C. This is visualised at the top of \Cref{fig:open_closed} where A and B, and B and C are linked by proven association and so the link between A and C might be a potentially interesting discovery. In particular, this system is interested in circumstances where no relationship between A and C has been previously established as this might therefore be a new connection that could be discovered. An example of this being successfully implemented by Swanson himself would be his discovery of using fish oil to treat Raynaud's syndrome. \\
+
+\subsubsection{Open Discovery}
+
+Open and closed discovery are the two main methods of Swanson's ABC system. Open discovery involves the user to have an identified concept A for which to discover possible C concepts. This can be done by identifying all the possible C concepts that are not linked to the original A but have at least one B concept in common with A. The connection between A and each C can then be evaluated by some metric and used to sort the possible C concepts in some way so that they can be returned to the user in meaningful manner. In this way, Open discovery can be used to answer the questions of what concepts are connected indirectly to a given concept and how they might compare to each other. \\
+
+\subsubsection{Closed Discovery}
+
+Closed discovery, on the other hand, seeks to answer entirely different questions. This system requires pre-given A and C concepts so that the B connections between them can be discovered. This allows the user to check if any common ground can be found between two concepts that they might suspect have a connection. This could even be generalised beyond unconnected concepts, it could be used to explore new ways two concepts, that have pre-existing connections, might be overlapping. Closed discovery therefore asks the question of how or why two concepts are connected. The two concepts do not have to exist in isolation of each other. In fact, since they answer very different questions they can be used in combination with each other to first discover new connections and then to explore why those concepts are connected. In this way Swanson created an effective and comprehensive approach to LBD, laying the groundwork for the development that followed. \\ 
+
+\subsection{Arrowsmith}
+
+An example of the closed discovery system is Arrowsmith \citep{swanson_interactive_1997}, a search system created by Swanson. Arrowsmith allows the user to input two terms, which will be the A and C terms for the closed discovery. It searches these titles for terms A and C, and returns a file for each respective term containing all of the titles with that term. The next step is for the Arrowsmith software to compare the two files and create a list of all 'B' terms that appear on both files. From here a stop word list of the 5000 most common terms is used to filter out the obviously redundant words from the list. \\
+
+In this way, Arrowsmith defines concepts as any term in an article title, and relationships between terms as co-occurrence of them in a title. This means that Arrowsmith does not have to decide what does or does not constitute a medical concept, but therefore does require the user to have sufficient knowledge to do this themselves. By using only titles, Arrowsmith avoids having to search full bodies of texts, but so does also miss any concepts not included in the titles. As it is closed discovery, it does not need to make predictions, but instead only provide a list of the linking concepts between the two provided. \\
+
+\subsection{Bio-sbKDS}
+
+Another approach to LBD is utilising semantic relations to create more meaningful predictions. Bio-sbKDS \citep{hu_semantic-based_2005}, Biomedical Semantic-based Knowledge Discovery System, is a system that uses biomedical ontologies to try to further automate the process of evaluating predictions. This system uses the MeSH tags of articles, a system of labels that are explained in greater detail later to represent the concepts in a paper. The focus of this system is to try to better define relationships between concepts than just the co-occurrence of them. It uses the Unified Medical Language System \citep{umls}, a system for unifying and standardising biomedical vocabularies, to categorise what the relationship between two concepts is. For example, drug A might treat symptom B, whereas if drug A and drug B are connected, then it is not the case that one treats the other, as neither is a condition. \\
+
+This system takes in a starting concept, and a desired relation from the user. Using the UMLS, it then establishes the semantic type of the concept and the desired relationship and uses this to filter down the list of target concept types it should search for. First, it takes all articles in a desired date range that include the starting concept. Next, it searches these articles for any occurrences of concepts that fit the target concept type. These concepts are used as the connecting B terms in Swanson's work and are ranked according to how many times they are found. Next all articles in the user's desired date range are searched for the highest ranking few of these B terms. Articles with the starting term are excluded, as this system wants to find new connections. From the returned articles, the MeSH tags filtered by if they fit the required semantic type and if they are in the top 100 MeSH terms and so are deemed too common. The remaining terms are then organised by how frequently they occur. \\
+
+In this way, Bio-sbKDS uses MeSH terms to represent concepts, and the semantic types of these terms to categorise them. By using the additional information of these categories, the system can define types of relationships between concepts and filter by these types to make more meaningful and interesting predictions as an open discovery system. \\ 
+
+\subsection{Graph Neural Network}
+
+In data science, machine learning has grown in use for extracting insights from especially large and complicated datasets. This is due to the inability of traditional algorithms ability to effectively run on such data, and understand all of its features. In LBD, it has been implemented in a number of different ways to make predictions of possible links between concepts. \\
+
+One such approach to using machine learning for LBD is a Graph Neural Network (GNN). The objective of a graph neural network (GNN), is to try to learn hidden or general information implied by the graph that is not obvious to see. For example, given a set of movies that a user likes, predicting what would be other movies they would want to watch. Traditionally this would be done by categorising movies into genres, so that if a user watches a lot of action movies, then the system would recommend other action movies. However, GNNs can pick up on more subtle information, maybe users who like movies A, B and C also tend to like movie D from an entirely different genre. This allows systems to propose much more focused, accurate, and personal recommendations to users than previously. \\
+
+GNNs do this by representing the graph as an edge vector where each edge is represented as a pair of numbers, representing the nodes joined by the edge. The node identifying numbers are embedded as each edge is processed the relevant node features are aggregated and then passed to the next layer. Using these node features, the system makes predictions about the state of each edge and compares this to the truth of if the edge exists. This result then updates the loss function and the model's understanding of the graph. This process continues over the graph and is then repeated for a number of epochs, depending on the system itself. With this information, the graph can evaluate new, unseen edges between these nodes and make a prediction on if they exist or not. \\
+
+An implementation of such a system for LBD was done by Ding and Jin, where they implemented such a system to try to improve on the more traditional approaches to making predictions in LBD. One advantage of this system that they hoped would improve predictions was the GNNs ability to capture the implicit graph structure in its training. Another, was how the system learns to score hypothetical edges as it trains, rather than having to do this in separate stages. The idea was that with advantages like these, they would be able to optimise the prediction process for LBD. They found that in fact this system did produce better results than other systems such as word2vec, supporting their hypothesis that the advantages of a GNN system, would improve predictive capabilities of an LBD system. \\
+
+\subsection{Matrix factorisation}
+
+Matrix factorization is a technique in machine learning and linear algebra often used for recommendation systems. At its core, matrix factorization involves decomposing a matrix into a product of two or more matrices, with the goal of revealing hidden patterns or structures within the data. For each pair of objects, say nodes on a graph, the system will take the dot product of each objects embedding. This dot product is then compared to the truth of the relationship between the objects, for example if there is an edge connecting them on the graph. The system aims to get the dot product of each of these combinations as close to the truth of them as it can and updates the loss function of these calculations, and as it goes. In this way, the system refines the embedding of each object to maximise the similarity to the truth of the matrix across the whole of it. This can be represented as an equation as follows :\\
+
+\begin{center}
+    $\text{min}_{U,V\in \mathbb{R}^{m\times d}}\left (||A - UV^T||_{F}^{2}\right )$
+\end{center}
+
+If applied to a knowledge graphs the values can be interpreted as follows: $A \in \mathbb{R}^{m\times m}$ is the matrix of edges between nodes, the matrix learns from an embedding of nodes $ \in \mathbb{R}^{m\times d}$. $U$ and $V$ are taken from this embedding for the required nodes for each edge. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/matrix_fact_example.png}
+    \caption{image from: https://developers.google.com/machine-learning/recommendation/collaborative/matrix}
+    \label{fig:matrix_fact_example}
+\end{figure}
+
+A common application of matrix factorization is collaborative filtering in recommendation systems. Here the matrix represents users' ratings for items (e.g., movies or products) as seen in \Cref{fig:matrix_fact_example}. This is an example of binary data in matrix, a user either likes or does not like a movie. However this system can also be used for more complicated relationships such as a rating. There is the limiting factor of the relationship must be represented as a singular numeric value, you could not have a matrix of text reviews, or set of numbers without first reducing them down to a single value. By decomposing this matrix into two lower-dimensional matrices, representing users and items, the algorithm can identify latent features that capture users' preferences and item characteristics. This allows for predicting missing ratings and generating personalized recommendations for users. \\
+
+Researchers have not explicitly applied this system to LBD, however it would be a good way to bridge the gap between simple algorithmic approaches and GNNs. It can be very difficult to determine what factors are causing outcomes in a GNN, and so a matrix factorisation system can allow for a more transparent approach to making predictions on a knowledge graph. In this way could further understanding of how this data can be best used be developed. \\ 
+
+\section{Data}
+
+Whatever system is used, it has to utilise some data source to construct its system of concepts and relationships. often used as a foundation for this in biomedical research is PubMed, a system to help with the organising and searching of life science and biomedical literature. It was created by the National Center for Biotechnology Information and contains the abstract and other key information of over 36 million publications. The primary feature of PubMed is MEDLINE, a system containing citations from selected journals and articles indexed by MeSH tags. \\
 
 \subsection{MeSH Tags}
 
@@ -134,199 +207,37 @@ MeSH tags are a system of labels used to identify and categorise biomedical arti
     \label{fig:mesh}
 \end{figure}
 
- The MeSH tag system is organised in a hierarchical tree structure. One advantage of this is it allows users to navigate through broader categories down to more specific terms. For example, the term "Diseases" is a broad category, under which you may find more specific terms like "Cardiovascular Diseases" and so on. With this, users can search for whatever level of specificity they require when exploring literature. Not only will this allow expert users to effectively filter down to exactly what they need, but also, less experienced users can use terms they are more familiar with to access larger sections of research. This process can even be conducted progressively, with users walking through the tree of terms to identify the best term for them to use. \\
+In \Cref{fig:mesh}, the MeSH tag system can be seen as a hierarchical tree structure. This means that all tags are linked to broader definitions of them, so that similar types of tags can be grouped together and categorised. For example, the term "Diseases" is a broad category, under which you may find more specific terms like "Cardiovascular Diseases" and so on. This is the system that was utilised by Hu \textit{et al.} to determine the semantic types of each tag when developing their system. By providing these categories built into the tag structure, they can be used this way to automatically label data, addressing a significant problem in natural language processing (NLP). Data labelling is often required in classification problems, where a system attempts to determine what category an abject might belong to. However, fields like biomedical science would require an expert to accurately understand and label data. This would be a very time consuming task, and so would cost a lot of money to pay an expert to complete. The structure of these MeSH tags bypass the need for this step and so are a very cost effective data source in this regard.\\
 
- By using this tree structure, MeSH also helps facilitate an easier and more consistent labelling of literature. It is easier to label data as a user does not need to select "Diseases" as well as "Cardiovascular Diseases". Instead, by selecting the most specific term that is relevant, they imply all the higher order terms that path directly to that term. For example, in  \Cref{fig:mesh}, selecting "Heart Failure" would implicitly label the paper with "Diseases", Cardiovascular Diseases" and "Heart Diseases". However, it would not label it with "Edema, Cardiac". This also keeps labelling of papers consistent, as researchers only need to select the most specific term for their paper, to then automatically assign a set of other relevant terms. Ensuring that all papers about "Heart Diseases" are also labelled with "Diseases" is not only important for consistent search results, but also for categorizing research for the purposes of using it as data. \\
+Furthermore, MeSH tags reduce entire medical articles down into a small selection of key terms that best describe it. Since they are a controlled vocabulary, they ensure that papers that overlap in an area will be labelled consistently with each other. Furthermore, they are explicitly labelled by experts and so have a great value as accurate and useful data. For a field like biomedical science, that is so complicated, this is a crucial factor for LBD research and development, as can be seen in the previously discussed papers that  have used these tags. \\
 
- A significant issue in natural language processing (NLP) of expert fields is getting data labeled by experts. This can be a very time intensive, yet boring task and so it is difficult and expensive to get experts in a particular field to label data for classification. This problem is exacerbated by modern NLP systems using vast quantities of data from a huge array of fields, many of which might well require expert understanding. To find, convince and pay experts from this many different fields is an impossible task and so finding data that does not require labelling is crucial to effectively developing such systems. \\
+MeSH tags are very efficient as data. They can be used to filter massive documents of text down into a handful of key terms that best describe the document. This will therefore save researchers using them a significant amount of time that is normally spent filtering data down into something meaningful, and since these terms are carefully selected by experts, reduce the risk that the filtering might remove vital information from the data. Furthermore, MeSH tags can be filtered down further, either by only selecting tags from certain branches of the tree, or by only using major topic tags, that are used to represent the main focus of a paper. \\
+
+\subsection{Other Data}
+
+Despite these benefits, MeSH tags do have drawbacks when used as data in this way. Since they are primarily tags for searching and categorising research papers, they are selected with this in mind. Information that is not deemed relevant for someone searching for this paper will therefore not be included in the MeSH tags. They are not selected to cover all areas of a paper for the purpose of LBD and so might not include information that actually could have helped identify links between research. \\
  
- MeSH tags work very well as data labels. Since they are a controlled vocabulary, they ensure that papers that overlap in an area will be labelled consistently with each other. Furthermore, they are explicitly labelled by experts and so have a great value as accurate and useful data. For a field like biomedical science, that is so complicated and can get very niche, this is an incredibly crucial factor for LBD research and development. Having in a place such a well developed data labelling system is probably a significant factor in why LBD has seen particular development in the field of biomedical and life sciences. \\
+Because of this, there is extensive research in the field of LBD in Biomedical science that either uses more than just MeSH tags or does not use them at all. This paper has already covered Swanson's Arrowsmith system, but there is much other research that seeks to represent the concepts in a different manner. For example, the work done by Lever \textit{et al.} uses the abstracts and titles of papers, as well as some full text bodies, to determine and represent their contents. The system they built aimed to utilise the global features of a knowledge graph through singular value decomposition (SVD). As previously mentioned, they build this knowledge graph using the abstracts and titles of papers. To reduce these passages into concepts that could be used as nodes, a word list to search for was derived from desired semantic groups in the UMLS Metathesaurus (version 2016AB) such as Anatomy or Chemicals and Drugs. If a pair of these desired terms would both appear in a sentence together, then they would be deemed to be connected. In this way, this paper establishes concepts using the UMLS Metathesaurus and uses co-occurrence in a sentence to define a relationship between these concepts. This system allows the researchers to explore the text in greater depth than MeSH tags do, although at the cost of having to do significant pre-processing of this data to produce the knowledge graph itself. \\ 
 
- Efficiency is a significant concern in data analysis. Often vast quantities of data is being processed and stored, so making sure to reduce this burden on the system is important. Not only will reducing data in a meaningful manner help with reducing run time and storage space, it also can help improve quality of results, as the noise in the data is reduced. Noise is the idea of data points that bulk out data sets without adding much meaningful information that can be used to improve results. Here are some examples of noise in data.
-\\ 
-\begin{itemize}
-    \item \textbf{Sensor Noise}, In data collected from sensors such as cameras or microphones, noise can be caused by electrical interference, fluctuations in the environment, or inaccuracies in the sensor itself. 
-    \item \textbf{Stop words}, In NLP, many words are so common they are redundant. These are categorised as stop words and it is common practice to filter the most common ones from data. This can range from removing a few hundred to a few thousand words, depending on the context of the task.
-    \item \textbf{Transmission Noise}Data transmitted over networks or communication channels can be corrupted by interference, distortion, or packet loss. \\
-\end{itemize}
+\section{This Project}
 
-MeSH tags are very efficient as data. They can be used to filter massive documents of text down into a handful of key terms that best describe the document. This will therefore save researchers using them a significant amount of time that is normally spent filtering data down into something meaningful, and since these terms are carefully selected by experts, reduce the risk that the filtering might remove vital information from the data. Furthermore, MeSH tags can be filtered down further, either by filtering for tags from certain branches of the tag tree, or by only using major topic tags, that are used to represent the main focus of a paper. \\
+To explore the use of MeSH tags in LBD, this project will first have to construct a knowledge graph composed of these tags. It will define the tags as medical concepts to link, and so have these tags as the nodes in the graph. A relationship between tags will be defined using co-occurrence in a paper, with additional weight to the edge dependant on how many time these tags appear in papers together. Next the use of this graph for LBD will be analysed. This will be done by implementing three systems across it, an ABC open discovery system, a GNN and a matrix factorisation system. The first of these will be able to set a baseline of what can be expected in performance from a well made prediction system, and explore the value of including these weights in predictions. Next, the other two can be compared to this, and to each other, to determine a good approach to using this graph. This project will also explore if multiple of these systems when ran on the same data, can be combined to make more accurate predictions. Therefore this paper will seek to answer the following three research questions. \\
 
-Despite these benefits, MeSH tags do have drawbacks when used as data in this way. Since they are primarily tags for searching and categorising research papers, they are selected with this in mind. Information that is not deemed relevant for someone searching for this paper will therefore not be included in the MeSH tags. They are not selected to cover all areas of a paper for the purpose of LBD and so might not include information that actually could have helped identify links between research. Because of this there is extensive research in the field of LBD in Biomedical science that uses more than just MeSH tags, for example the work done by Lever et al. where they use the titles and abstracts of papers to find coocurrences. 
-
-\section{Swanson's ABC System}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{images/abc_open_closed.png}
-    \caption{image from: Literature Based Discovery (LBD): Towards Hypothesis Generation and Knowledge Discovery in Biomedical Text Mining}
-    \label{fig:open_closed}
-\end{figure}
-
-LBD is founded on Swanson's ABC approach. In this approach, if concepts A and B have an established relationship, and concepts B and C do too, then there may well be a transitive relationship between A and C. This is visualised at the top of \Cref{fig:open_closed} where A and B, and B and C are linked by proven association and so the link between A and C might be a potentially interesting discovery. In particular, this system is interested in circumstances where no relationship between A and C has been previously established as this might therefore be a new connection that could be discovered. An example of this being successfully implemented by Swanson himself would be his discovery of using fish oil to treat Raynard's disease. \\
-
-\subsection{Open Discovery}
-
-Open and closed discovery are the two main methods of Swanson's ABC system. Open discovery involves the user to have an identified concept A for which to discover possible C concepts. This can be done by identifying all the possible C concepts that are not linked to the original A but have at least one B concept in common with A. The connection between A and each C can then be evaluated by some metric and used to sort the possible C concepts in some way so that they can be returned to the user in meaningful manner. In this way, Open discovery can be used to answer the questions of what concepts are connected indirectly to a given concept and how they might compare to each other. \\
-
-\subsection{Closed Discovery}
-
-Closed discovery, on the other hand, seeks to answer entirely different questions. This system requires pre-given A and C concepts so that the B connections between them can be discovered. This allows the user to check if any common ground can be found between two concepts that they might suspect have a connection. This could even be generalised beyond unconnected concepts, it could be used to explore new ways two concepts, that have pre-existing connections, might be overlapping. Closed discovery therefore asks the question of how or why two concepts are connected. The two concepts do not have to exist in isolation of each other. In fact, since they answer very different questions they can be used in combination with each other to first discover new connections and then to explore why those concepts are connected. In this way Swanson created an effective and comprehensive approach to LBD, laying the groundwork for the development that followed. \\ 
-
-\section{Discovery Methods}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{images/lbd_discovery_methods.png}
-    \caption{image from: Literature Based Discovery (LBD): Towards Hypothesis Generation and Knowledge Discovery in Biomedical Text Mining}
-    \label{fig:discovery_methods}
-\end{figure}
-
-Ultimately LBD depends on the proficiency of its discovery methods. Furthermore, for LBD to grow in use and to keep up with developing data analysis techniques, it must continue to improve the systems of discovery. \Cref{fig:discovery_methods} displays a rough outline of the progression of LBD systems and provides some umbrella concepts that allow the grouping of similar designs. There are have been several different approaches over the years which are worth exploring further. \\
-
-\subsection{Co-occurence Approaches}
-
-Using this ABC system, Swanson went on to developed the Arrowsmith search system. This is a co-occurence based system, where links between concepts are determined by if they both occure in the same paper's title. The objective of this tool is to make the ABC system more accessible and usable for researchers to actually use without having to build their own version of the system from scratch. The system implements the closed discovery system, allowing researchers to explore links between two pre-chosen concepts that they are looking to explore. \\
-
-It functions by searching article titles in Medline, a biomedical database of citations and abstracts. It searches these titles for terms A and C, and returns a file for each respective term containing all of the titles with that term. The next step is for the Arrowsmith software to compare the two files and create a list of all 'B' terms that appear on both files. From here a stop word list of the 5000 most common terms is used to filter out the obviously redundant words from the list. \\
-
-At this stage, the user can then filter the list further by taking out terms that they know are not relevant or interesting. Furthermore, the list can be automatically filtered further to only give terms that appear at least twice in both of the A and C files. This gives the user an easier way to significantly reduce the returned terms if they are dealing with a particularly long list. Using this finalised list, the system will return a list of titles containing both the A and B terms, and the B and C terms. From this, the user will be able to determine if they think there are any links between these concepts worth exploring. \\
-
-In this way, Arrowsmith can be a useful tool for exploring connections between concepts. This is irrespective of whether or not there is a pre-existing connection between concepts A and C. It could for example be used to discover new links between two concepts that we already know are connected but want to explore further. However, a draw back of this system is that it is heavily reliant on the user being an expert in the field and having a wealth of experience at reading and understanding biomedical publications. \\ 
-
-\subsection{Semantic Relation Approaches}
-
-Another approach to LBD is utilising semantic relations to create more confident and accurate predictions. Hu et al. developed a system called Bio-sbKDS, Biomedical Semantic-based Knowledge Discovery System, that uses biomedical ontologies to try to fully automate the process of refining predictions. The benefit of this is it should greatly reduce the time and effort an expert would have to input to produce a meaningful result. By using semantic networks such as UMLS, Unified Medical Language System, the system can better identify connections that are worth investigating. In this way, this system implements Swanson's open discovery system, allowing users to discover concepts linked by specific relationships. To make these predictions, Bio-sbKDS takes in the following information from the user. 
-\\
-\begin{itemize}
-    \item \textbf{Starting concept}, a keyword to represent the concept that the user wants to discover concepts that link to it. 
-    \item \textbf{Semantic relationship}, the desired relationship that the user is interested in between the given concept and the discovered concepts. 
-    \item \textbf{Date range}, a set of dates to limit the searched publications to. \\
-\end{itemize}
-
-Using these inputs, the user is able to significantly focus the output of the system towards what they are looking for. Furthermore, by reducing the date range to a relevant window for their particular research, the user can significantly cut down on the time taken for the system to process the data. \\
-
-\subsection{Graph-based Approaches}
-
-One aspect of graph based approaches is the idea of formatting and storing the information as a graph. This would be instead of the standard relational tables used for SQL, structured query language, as these tables don't make as much sense for data that is in the form of a network as opposed to distinct objects. Instead, if this can data can be formatted in storage as a graph, it could be more straightforward and more effective for accessing in LBD. \\
-
-With this in mind, Hristovski et al. used Neo4j to graph database for LBD. Neo4j is a noSQL, commonly thought of as not only SQL, technology that allows the creation of a database that stores data in the form of a graph comprised of nodes and edges. Neo4j therefore has its own query language, Cypher, for accessing its data. With this query language, both open and closed discovery can be implemented on the database, allowing the previously described systems to be re-implemented using this technology. Cypher has the functionality to satisfy these systems, as it can both run simple commands that only care about co-occurrence, or more complicated ones that filter by concept and semantic relationship type. \\
-
-However, implementation of this system did face some problems. When using the LOAD CSV command, for loading text data into the system, it failed to load all of the data, only managing the first few million instances. In addition, if the user wishes to place further stipulations on the nature of the concepts and relationships they want returned, the authors found that the queries would take longer to process. When the researchers built this system in 2015, Neo4j was version 2.1.6 and had two types of indexing, legacy indexes and schema indexes. The legacy indexes are not recommended as they are difficult to use, but they provide the desired text, node, and relational indexing. The ability to fully index text and relations is not provided by the recommended schema index. \\
-
-\section{Machine Learning}
-
-
-In the realm of data science, machine learning has emerged in a prominent role. Particularly it is used in extracting insights and predictions from especially vast and complex datasets. This is due to the inability of traditional algorithms ability to effectively run on such data, so creating the requirement for a different system. Its applications span various domains, including:
-\\
-\begin{itemize}
-    \item \textbf{Recommender Systems}, where algorithms forecast future trends or behaviors based on historical data.
-    \item \textbf{Classification and Clustering}, used for grouping similar data points or categorizing new instances into predefined classes. 
-    \item \textbf{Natural Language Processing}, enabling computers to understand, interpret, and generate human language. 
-    \item \textbf{Computer Vision}, developing machines ability to analyze and interpret visual data such as images and videos. \\
-\end{itemize}
-The continued success of machine learning across a variety of fields has continued to accelerate its development and applications. \\
-
-\subsection{Environmental costs}
-
-In 2022, Wu et al. conducted a holistic evaluation of the environmental costs and impacts of machine learning. Their key takeaway on the growth of AI is as follows: \\
-
-\begin{quote}
-    The Growth of AI: Deep learning has witnessed an exponential growth in training data, model parameters, and system resources over the recent years. The amount of data for AI has grown by 2.4×, leading to 3.2× increase in the data ingestion bandwidth demand. Recommendation model sizes have increased by 20× between 2019 and 2021. The explosive growth in AI use cases has driven 2.9× and 2.5× capacity increases for AI training and inference at Meta over the recent 18 months, respectively. \\
-\end{quote}
-
-This represents an incredible increase in scale, particularly for recommendation models used in often for LBD. An increase by a factor of 20 in model sizes over just two years is a massive difference in quantity that needs addressing. Fortunately, in the same paper, Wu et al. go on to discuss solutions to this problem. They propose that a key step to tackilng carbon emmissions is optimization of these systems. \\
-
-\begin{quote}
-    Optimization across the axes of algorithms, platforms, infrastructures, hardware can significantly reduce the operational carbon footprint for the universal translation model by 810×. Along with other efficiency optimization at-scale, this has translated into 25.8\% operational energy footprint reduction over the two-year period.\\
-\end{quote}
-
-This is part of the holistic solution they propose to reducing the footprint of AI which entails looking at these systems from data collection all the way through to training. Furthermore, the cost of manufacturing the hardware required for these systems is key given drive for producing ever better specialist hardware inspired by a boom in AI popularity.\\
-
-\subsection{Matrix Factorization}
-
-Matrix factorization is a technique in machine learning and linear algebra often used for recommendation systems. At its core, matrix factorization involves decomposing a matrix into a product of two or more matrices, with the goal of revealing hidden patterns or structures within the data. \\
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{images/matrix_fact_example.png}
-    \caption{image from: https://developers.google.com/machine-learning/recommendation/collaborative/matrix}
-    \label{fig:matrix_fact_example}
-\end{figure}
-
-A common application of matrix factorization is collaborative filtering in recommendation systems. Here the matrix represents users' ratings for items (e.g., movies or products) as seen in \Cref{fig:matrix_fact_example}. This is an example of binary data in matrix, a user either likes or does not like a movie. However this system can also be used for more complicated relationships such as a rating. There is the limiting factor of the relationship must be represented as a singular numeric value, you could not have a matrix of text reviews, or set of numbers without first reducing them down to a single value. By decomposing this matrix into two lower-dimensional matrices, representing users and items, the algorithm can identify latent features that capture users' preferences and item characteristics. This allows for predicting missing ratings and generating personalized recommendations for users. \\
-
-Koren et al. describe a model of matrix factorization for recommender systems.
-
-\subsection{Graph Neural Networks}
-
-Graphs used in LBD have already been introduced, but to generalise momentarily, graphs generally compose of three key forms of information:
-\\
-\begin{itemize}
-    \item \textbf{Vertex (V)}, attributes that form the nodes of the and tend to represent objects such as people or movies.
-    \item \textbf{Edge (V)}, attributes that link the graph together and tend to represent relationships between the nodes such as distance or likes. 
-    \item \textbf{Global (U)}, attributes that summarize the overall state of the graph, such as number of nodes, number of edges or density. \\
-\end{itemize}
-
-With these simple attributes, a huge array of different data forms can be represented in graphs. Some things fit this really naturally such as a map, with locations and nodes and edges as distances, some things are more abstract, such as text, with words as nodes and the flow and structure represented by edges. \\
-
-The objective of a graph neural network (GNN), is to try to learn hidden or general information implied by the graph that is not obvious to see. For example, given a set of movies that a user likes, predicting what would be other movies they would want to watch. Traditionally this would be done by categorising movies into genres, so that if a user watches a lot of action movies, then the system would recommend other action movies. However, GNNs can pick up on more subtle information, maybe users who like movies A, B and C also tend to like movie D from an entirely different genre. This allows systems to propose much more focused, accurate, and personal recommendations to users than previously. \\
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{images/image_recognition.png}
-    \caption{image from: https://distill.pub/2021/gnn-intro/}
-    \label{fig:image_recogniton}
-\end{figure}
-
-In recommender systems, the objective is in completing edge-level tasks. That is to say, trying to establish, understand, and ultimately predict relationships between different nodes. An example of this can be seen in \Cref{fig:image_recogniton}, where the image is represented as a graph in order to understand it and even to understand the relationship between components with the image. This will allow complicated and data expensive things like images to be reduced down to very simple and small objects like a graph that can be much more easily processed.
-
-\section{Research Questions}
+\subsection{Research Questions}
 
 \textbf{RQ1:} How do link weight and link count compare and the combination of these compare in an ABC prediction system using a MeSH tag knowledge graph? \\
 
 \textbf{RQ2:} How do the ABC, GNN, and matrix factorisation systems compare to each other, when predicting on a MeSH tag knowledge graph? \\
 
 \textbf{RQ3:} How do the various possible combinations of the ABC, GNN, and matrix factorisation systems compare to each other and to each of these systems individually? \\
-%==================================================================================================================================
-\chapter{Analysis}
-\section{Document and Term Representation}
-\begin{itemize}
-    \item How to represent a document
-    \item How to represent a term
-    \item How to represent a Relationship
-\end{itemize}
-\section{Data Processing}
-\begin{itemize}
-    \item What data do we want
-    \item How do we want to represent it
-\end{itemize}
-\section{Swanson ABC}
-\begin{itemize}
-    \item point
-\end{itemize}
-\section{Machine Learning}
-\begin{itemize}
-    \item time/resource cost
-    \item future in data analysis
-    \item link prediction vs classifiers
-    \item Recommender systems
-\end{itemize}
-\section{MeSH Tags}
-\begin{itemize}
-    \item Biomedical Text mining using MeSH
-    \item benefits as data 
-    \item Expert summary
-    \item Key information of a paper
-    \item easier to process
-\end{itemize}
 
-%==================================================================================================================================
 \chapter{Implementation}
+
 \section{Data Processing}
+
 \subsection{Initial Data Filtering}
 
-The first step to development was processing the data. I was provided with a data set of 1410000 PubMed articles by my supervisor. This data set containing some key identifying data for the article, and the corresponding MeSH tags for each article. From this data I took the first million articles to round the number neatly. This would make for clearer calculations in the future for readability, although in the end this was not relevant. With this reduction I distilled out the most important data that I needed moving forwards. This included:
+The first step to development was processing the data. I was provided with a data set of 1.4M PubMed articles accumulated by Dr J Lever (Glasgow University). This data set contains key identifying data for each article, and the corresponding MeSH tags. From this data I took the first 1M articles to make for simpler calculations in the future for readability, although in the end this was not relevant. With this reduction I distilled out the key data that needed for the analysis and machine learning systems. This included:
 \\
 \begin{itemize}
     \item \textbf{pmid}, a unique identifier for each article.
@@ -334,33 +245,33 @@ The first step to development was processing the data. I was provided with a dat
     \item \textbf{mesh names}, a list of MeSH tags for the article. Each tag is represented by its name. \\
 \end{itemize}
 
-There were a couple of key pieces of information that I chose not to store. Firstly, tags were designated either major or not to indicate their importance to the article they were a part of. This could have been used to further refine the dataset into more meaningful terms. However, each article tended to only have one or two major tags present. This would result in a very small dataset with very few co occurrences between tags. Therefore, I decided not to use this information to filter my data as I believed it would do more reducing of the information than refining. Secondly, some tags had qualifying tags that contextualised them. I decided that these qualifiers would make to many unique occurrences of tags and reduce comparability within my dataset. This would result in a sparser dataset with far more nodes, but without much more information. I once again therefore chose to omit these pieces of information.\\
+There were a couple of key pieces of information that I chose not to include. Firstly, tags were designated either major or minor where  indicated lower importance to the article referenced. This could have been used to further refine the data with more meaningful associations however, each article tended to only have one or two major tags present. This would result in a very small dataset with very few co-occurrences between tags. Therefore, I decided not to use this information to filter my data as I believed it would do more reducing of the information than refining. Secondly, some tags had qualifying terms that added additional context. I decided that these qualifiers would make too many unique occurrences of tags and reduce comparability within the dataset. This would result in a more sparse dataset with  more nodes but without a matching information increase. I therefore also chose to omit these contextual tags.\\
 
-To store these reduced articles, I used pickle. Pickle is a python library that allows for the serializing or "pickling" of data structures such as dictionaries into byte streams. This then would allow me to "unpickle" these streams back into python data structures when I wish to access them later. Because the data structure is preserved before and after pickling, it makes storing and accessing data a very consistent process, allowing me to easily access my data. What I pickled here therefore, was a list of dictionaries, each dictionary containing the information listed above.\\
+To store this reduced article dataset, I used \textit{pickle} \textcolor{red}{[ref]}. Pickle is a python library that allows for the serializing or "pickling" of data structures such as dictionaries into byte streams. This then would allow me to "unpickle" these streams back into python data structures when I wish to access them later. Because the data structure is preserved before and after pickling, it makes storing and accessing data a straightforward, consistent and reliable process, allowing me to easily access my data. What I \textit{pickled} here therefore, was a list of dictionaries, each dictionary containing the information listed above.\\
 
-The next step in processing the data, was filtering out the most and least common terms. The first half of this is very common in data processing, as it removes stop words like in NLP data processing. These terms are removed as the don't tell us anything meaningful, they will be connected to so many other nodes in the graph that their connections cease to tell us any useful information. Not only will they not provide any useful learning, but they can even distort the learning process of any system built later. The least popular tags on the other hand will be so rare, and unconnected that they will bulk out the graph without making many connections between other concepts. This makes for graphs with very low density which are less good for training predictive systems on.\\
+The next step in processing the data, was filtering out the most and least common terms. This is important because terms that are too common do not provide any useful discrimination between data entries and can overwhelm or mask the more important signals in other links. Removing the most ubiquitous terms is very common in data processing, for example for NLP data processing it removes stop words, common words that provide little to no information. These terms  don't tell us anything meaningful as they will be connected to so many other nodes in the graph that their connections cease to discriminate. Not only will they not provide anything useful in the training phase, but they can even distort the learning process of any system built later. The least popular tags on the other hand will be so rare, and unconnected that they will bulk out the graph without making many connections between other concepts. This makes for graphs with very low density which are less useful for training predictive systems.\\
 
 \subsection{Splitting the data}
 
-In all machine learning systems it is necessary to split the data into training and testing data. Training data is fed into the system so that it can develop an understanding of patterns and links in the system. Test data is then used to evaluate the ability of the system to apply those patterns that it observed to new data. How the system operated on the new, and crucially, unseen data is how the capabilities of the system can be evaluated. \\
+In all machine learning systems it is necessary to split the data into training and testing data. Training data is fed into the system so that it can develop an understanding of patterns and links in the system. Test data is then used to evaluate the ability of the system to apply those patterns that it observed to new data. How the system operated on the new, and crucially unseen data, is how the capabilities of the system can be evaluated. \\
 
-For LBD, the system is specifically aiming to predict links that could be discovered based on links that currently exist. Therefore, to split the data I time split it along a certain year. The standard split between training and test sets is between 0.1 and 0.2. To find this I iterated through a series of years to find where this split best lay. I resulted in splitting along 2008, with 896,512 articles from before 2008 and 103,488 from 2008 onwards, which results in a ratio of 0.12 and so falls between 0.1 and 0.2. \\
+For LBD, the system is specifically aiming to predict links that could be discovered based on links that currently exist. For this application the key question is how can an existing dataset but used to predict a future dataset. Therefore the best division is a split with respect to time in particular before (the training set) and after (the test set) a certain year. The typically recommended split between the volume of data in the training and test sets is between 0.1 and 0.3. To find this I iterated through a series of years to find where this split best lay. I resulted in splitting along 2008, with 896,512 articles from before 2008 and 103,488 from 2008 onwards, which results in a data volume ratio of 0.12. \\
 
 \section{Knowledge Graphs}
 
 \subsection{NetworkX}
 
-NetworkX is a free Python package used to build and analyse graph data structures. Among data analysts, it is the most used graph package and particularly stands out for scalability and portability. Because of its popularity among data scientists, it is very well supported by other libraries such as Pytorch, which allows you to directly translate NetworkX graphs into Pytorch Geometric Data. It is imortant to use standardized tools in research to ensure consistency, comparability, and reliability of data across studies. In addition, it  facilitates repeatable and understandable results and analysis. For all of these reasons I chose to use NetworkX for building my graphs. \\
+NetworkX is a free Python package used to build and analyse graph data structures. Among data analysts, it is the most used graph package and particularly stands out for scalability and portability. Because of its popularity among data scientists, it is very well supported by other libraries such as PyTorch, which allows you to directly translate NetworkX graphs into PyTorch Geometric Data. It is important to use standardized tools in research to ensure consistency, comparability, and reliability of data across studies. In addition, it  facilitates repeatable and understandable results and analysis. For all of these reasons I chose to use NetworkX for building my graphs. \\
 
 \subsection{Initial Creation}
 
-The graphs I needed to make were homogeneous graphs, graphs with only one type of edge and one type of node, with the tags as the nodes in the graph. Two graphs needed to be made, a before 2008 graph that would be used for training and an after 2008 graph that would be used for testing. These graphs will be connected by co occurrence between MeSH tags. That is to say, if two tags have appeared in the same article, then they will have an edge between them. These edges will then be weighted, with a weight equivalent to the number of graphs that the two edges appear in together. \\
+The graphs I needed to make were \textit{homogeneous} i.e. graphs with only one type of edge and one type of node, with the tags as the nodes in this implementation. Two graphs needed to be constructed, a pre-2008 graph that would be used for training and a post-2008 graph that would be used for testing. The nodes within these graphs will be connected by co-occurrence between MeSH tags. That is to say, if two tags have appeared in the same article, then they will have an edge between them. These edges will then be weighted, with a weight equivalent to the number of articles that the two edges appear in together. \\
 
-My current data was organised fundamentally differently to the graphs I needed to make. At the moment, my data was split into two files, before 2008 and after 2008, which is correct. However, each file was organised by article, with the corresponding mesh tags for each one. My graphs needed to be organised by co occurrence of tags in articles, and so I next created a new file from each current one. These new files contained the pairs of nodes that co occurred, with a numerical value of how many times they did so. This required walking through each article and creating a pair between each of the MeSH tags present in that article. If an edge created this way had already been created before from a previous article, then the value of that edge would be incremented by one instead. For example there was a pairing of Biodiversity and United States with a weight of three, since they appeared together in three articles. \\
+My initial dataset was organised differently to the graphs I needed to make. That  data was split into two files, before 2008 and after 2008, however, each file was organised by article, with the corresponding mesh tags for each one. My graphs needed to be organised by co-occurrence of tags in articles, and so I next created a new file from each current one. These new files contained the pairs of tags that co-occurred, with a numerical value of how many times they appeared in the dataset. This required walking through each article and creating a pair between each of the MeSH tags present in that article. If an edge created this way had already been created before from a previous article, then the value of that edge would be incremented by one instead. For example there was a pairing of ``Biodiversity'' and ``United States'' with a weight of three, since they appeared together in three articles. \\
 
-I then iterated through this, adding to the NetworkX graph with add\_edge(),  which adds an edge of two nodes and a weight with each iteration. When ran on each of the before 2008 pairs and after 2008 pairs files, I produced a before 2008 graph with 5,453,625 edges and 9847 nodes and an after graph of 1,281,979 edges and 9654 nodes. For the purposes of our data, the edges is the value that matters as these are the values that are trained on and predicted. \\
+I then iterated through this, adding to the NetworkX graph with \texttt{add\_edge()},  which adds an edge between two nodes and a weight with each iteration. When ran on each of the pre-2008 and post-2008 pairs files, I produced a before 2008 graph with 5,453,625 edges and 9847 nodes and an after  2008graph of 1,281,979 edges and 9654 nodes. For the purposes of our data, the number of edges is the value that is most important as these are the entities that are trained on and predicted. \\
 
-To sanity check the creation of these graphs, I created a small graph of ten edges that could be used to evaluate if the system is working. As can be seen in \Cref{fig:test_graph_creation}, this process does successfully produce a graph comprised of the weighted edges, and recognising nodes of the same name are the same node. \\
+To debug and provide a ``sanity'' check of the creation of these graphs, I created a small graph of ten edges that could be used to evaluate if the system is working. As can be seen in \Cref{fig:test_graph_creation}, this process does indeed successfully produce a graph comprised of the weighted edges, and recognises that nodes of the same name are the same node, i.e. no node duplication. \\
 
 \begin{figure}[h]
     \centering
@@ -371,11 +282,11 @@ To sanity check the creation of these graphs, I created a small graph of ten edg
 
 \subsection{Sub-Graph Creation} 
 
-For all of the following systems I would create, I would want to be able to test them on smaller sub-graphs so that I could run them faster for testing purposes and to easily evaluate if they are functioning correctly. However, as can be seen in \Cref{fig:test_graph_creation}, the data when used for creating these graphs is organised by how the pairs of tags were initially formed. I was concerned that this data trend would continue into the graphs, resulting in strange and unhelpful graphs like \Cref{fig:test_graph_creation}. Therefore I ran a test of creating a sub-graph from the before 2008 graph containing ten nodes. This graph can be seen in \Cref{fig:test_subgraph}. As can be observed in this graph, it is much more meaningful and contains more information of the relationships between each of the nodes present than was the case in \Cref{fig:test_graph_creation}. \\
+For all of the subsequent systems I create, I would want to be able to test them on smaller sub-graphs so execution times are faster for testing purposes and to more easily evaluate if they are functioning correctly. However, as can be seen in \Cref{fig:test_graph_creation}, the data when used for creating these graphs is organised by how the pairs of tags were initially ordered in the dataset files. I was concerned that this data trend would continue into the graphs, resulting in strange and unhelpful graphs such as that shown in \Cref{fig:test_graph_creation}. Therefore I ran a test of creating a sub-graph from the before 2008 graph containing ten nodes. This graph can be seen in \Cref{fig:test_subgraph}. As can be observed in this graph, it is much more meaningful and contains more information of the relationships between each of the nodes present than was the case in \Cref{fig:test_graph_creation}. \\
 
 \subsection{Filtering Graphs}
 
-For making and evaluating my link predictions, I required certain features to my data. Firstly, in my after 2008 graph, I only wanted to have edges present that were not present in the before 2008 graph. That is to say, if the link between concepts A and C had already been established before the time-split, there is no value in predicting it. Furthermore, I only wanted to predict about nodes, or MeSH tags, that I had already seen in the before 2008 graphs. Therefore, I combed through the post 2008 graph and removed any edges that existed in the before 2008 graph and any nodes that did not. This resulted in a filtered after 2008 graph with 362987 edges and 9653 nodes. \\
+For making and evaluating my link predictions, I required certain features in the data. Firstly, in my post-2008 graph, I only wanted to have edges present that were not present in the pre-2008 graph. That is to say, if the link between concepts A and C had already been established before the time-split, there is no value in predicting it. Furthermore, I only wanted to predict about nodes, or MeSH tags, that I had already seen in the before 2008 graphs. Therefore, I combed through the post 2008 graph and removed any edges that existed in the before 2008 graph and any nodes that did not. This resulted in a filtered post-2008 graph with 362987 edges and 9653 nodes. \\
 
 \begin{figure}[h]
     \centering
@@ -388,30 +299,31 @@ For making and evaluating my link predictions, I required certain features to my
 
 \subsection{Initial Process}
 
-The first prediction system I implemented was Swanson's ABC system. First, this required for each A node, getting a list of B nodes by returning the neighbours of that A node. At this stage we had the all of the concepts that co-occurred in articles with the MeSH tag represented by that A node. The next step was to get the neighbours of each of these B nodes, however there was an additional stipulation here. These new neighbours had to be filtered for any of the other B nodes. This is because, to qualify as a C node, the node in question must not already be connected to the A node. Once this filtering was done, a set of C nodes and B nodes was complete for each A node. \\
+The first prediction system I implemented was Swanson's ABC system. First, this required for each A node, generating a list of B nodes by returning the neighbours of that A node. At this stage we had the all of the concepts that co-occurred in articles with the MeSH tag represented by that A node. The next step was to get the neighbours of each of these B nodes, however there was an additional stipulation here. These new neighbours had to be filtered for any of the other B nodes. This is because, to qualify as a C node, the node in question must not already be connected to the A node. Once this filtering was done, a set of C nodes and B nodes was complete for each possible A node. \\
 
 \subsection{Sorting C nodes}
 
-On its own, the system so far simply returns all possible C nodes with no ability to evaluate how good each of these C nodes is as a prediction of a future link. To evaluate these predictions, they need to be sorted by some system which can rank them. With the data provided by our system there are three ways that these C nodes can be ranked. \\
+As it stands, the system thus far simply returns all possible C nodes with no ability to evaluate how good each of these C nodes is as a prediction of a future link. To evaluate these predictions, they need to be sorted by some system which can rank them. With the data provided by our system there are three ways that these C nodes can be ranked. \\
 
-The first approach is to use the total weight of the edges that connect each C node to the original A node. An easy mistake to make here is to only consider the edges from the C node and sum these. However, the weight of the edges between the A node and the B nodes should also be included here. For example, if A and C are connected by nodes B1 and B2, the total weight of the connection between A and C will be the summed weight of edges AB1, AB2, CB1 and CB2. This can formalised as follows, where $n$ is the number of B nodes the connect A and C.
+The first approach is to use the total weight of the edges that connect each C node to the original A node. An easy mistake to make here is to only consider the edges from the C node and sum these. However, the weight of the edges between the A node and the B nodes should also be included here. For example, if $A$ and $C$ are connected by nodes $B_1$ and $B_2$, the total weight of the connection between $A$ and $C$ will be the summed weight of edges $AB_1$, $AB_2$, $CB_1$ and $CB_2$. This can formalised as follows, where $n$ is the number of $B$ nodes that connect $A$ and $C$.
 \begin{center}
-    $C_{\text{weight}} = \sum_i^n ((AB_i)_{\text{weight}} + (CB_i)_{\text{weight}})$ \\
+    $C_{\text{weight}} = \sum_{i=1}^n ((AB_i)_{\text{weight}} + (CB_i)_{\text{weight}})$ \\
 \end{center}
 
-The next sorting system will use the number of connecting B nodes between each A and C node. This means that each possible C MeSH tag will simply have a value attributed to it equal to the number of MeSH tags that appear in an article with both it and the original A tag. For example, if A and C are connected by nodes B1 and B2, the C node will be evaluated with a frequency score of 2. This can formalised as follows, where set $B$ is the set of nodes that connect A and C.
+The next sorting system will use the number of connecting B nodes between each A and C node. This means that each possible C MeSH tag will simply have a value attributed to it equal to the number of MeSH tags that appear in an article with both it and the original A tag. For example, if A and C are connected by nodes $B_1$ and $B2_$, the C node will be evaluated with a frequency score of 2. This can formalised as follows, where set $B$ is the set of nodes that connect A and C.
 \begin{center}
     $C_{\text{frequency}} = |B| $\\
 \end{center}
 
-The final method of ranking these C nodes is to combine the previous two systems. To do this I multiplied the two values together. I opted not to sum them together as this would make the frequencies fairly irrelevant in the calculation. This calculation can be formalised as follows, given the previous two equations we have just defined. The only modification made, is that the square root of the value is taken so as to keep the numbers more readable.
+The final method of ranking these C nodes is to combine the previous two systems. To do this I multiplied the two values together. I opted not to sum them together as this would make the frequencies fairly irrelevant in the calculation. This calculation can be formalised as follows, given the previous two equations we have just defined. The only modification made, is that the square root of the value is taken so as to keep the numbers of the same dimensionality and easier to compare.
+
 \begin{center}
     $C_{\text{combined}} = \sqrt{|B|(\sum_i^n ((AB_i)_{\text{weight}} + (CB_i)_{\text{weight}}))}$\\
 \end{center}
 
 \subsection{Sanity check}
 
-To ensure that these systems were producing the results I wanted I conducted a sanity check on them using the small, ten node graph seen previously in \Cref{fig:test_subgraph}. I used the node United States Public Health Service node as the A to evaluate on this graph. This node had five C nodes, giving a range of different frequencies, weights and combined scores. Here are the frequencies as an example of how the C nodes can be sorted. These scores can be compared to \Cref{fig:test_subgraph} to see that the system correctly evaluates them.\\
+To ensure that these systems were producing the results I wanted I conducted a ``sanity'' check on them using the small, ten node graph seen previously in \Cref{fig:test_subgraph}. I used the node ``United States Public Health Service'' node as A to evaluate on this graph. This node had five C nodes, giving a range of different frequencies, weights and combined scores. Here are the frequencies as an example of how the C nodes can be sorted. These scores can be checked against \Cref{fig:test_subgraph} to confirm that the system is correctly evaluating the frequencies.\\
 
 \begin{table}[h]
 \centering
@@ -431,21 +343,21 @@ To ensure that these systems were producing the results I wanted I conducted a s
 
 \subsection{PyTorch}
 
-PyTorch, created by Facebook AI Research and other labs, blends fast and flexible GPU-accelerated libraries with an easy Python interface. It's great for quickly trying out new ideas and works with many types of deep learning models. It allows for coding in python but with the efficiency usually reserved for other more demanding languages. PyTorch is well integrated with other packages such as SciPy, NumPy and NetworkX, enabling seamless combinations with them. Furthermore, PyTorch is widely used in data science reading enabling for better collaboration of research and replication of results. \\
+PyTorch, created by Facebook AI Research and other labs, blends fast and flexible GPU-accelerated libraries with an easy Python interface. It's an excellent tool for quickly trying out new ideas and works with many types of deep learning models. It allows for coding in python but with the efficiency usually reserved for other more demanding languages. PyTorch is well integrated with other packages such as SciPy, NumPy and NetworkX, enabling seamless and efficient programming. Furthermore, PyTorch is widely used in data science studies and publications thereby enabling for easier collaboration and sharing of research and replication and validation of results. \\
 
-Within PyTorch is a sub library called PyTorch Geometric. This library is designed to allow straightforward creation and training of GNNs for structured data such as graphs. It is this library that contains the aforementioned function that allows for the easy translation from NetworkX graphs to PyTorch Data structures. In addition, it contains a variety of functionality to allow for deep learning on graphs such as batch loaders, graph convolution networks (GCNs) and GNNs. \\
+Within PyTorch is a sub library PyTorch Geometric which is designed to allow straightforward creation and training of GNNs for structured data such as graphs. It is this library that contains the aforementioned function that allows for the easy translation from NetworkX graphs to PyTorch Data structures. In addition, it contains a variety of functionalities to allow for deep learning on graphs such as batch loaders, graph convolution networks (GCNs) and GNNs. \\
 
 \subsection{Starting building}
 
 Despite these benefits, I found it incredibly hard to get into PyTorch. Complicated tutorials, dense documentation and endless functions within functions made for a near insurmountable entry to the software. This lead to a lot of time being spent going round in circles without producing anything, just trying to fix bugs within bugs and creating more problems than I was solving. To rectify this spiral, I opted to copy a tutorial from Medium written by Jan Eric Lenssen and Matthias Fey, that builds a link prediction model on a heterogeneous graph. This tutorial follows a PyTorch tutorial on link prediction but adds to it explanations of functions and concepts to aid with development and understanding. \\
 
-Translating this code to fit my data was very challenging. Their train\_loader using PyTorch Geometric LinkNeighbourLoader did not accept their data format, and when I tried to fit it to my data, once again did not work there either. Moving forwards with the development, I had to change their data set up to accommodate my graphs. The biggest hurdle in this process was translating it from heterogeneous to homogeneous. I had assumed that this would be a straight forward process given that I would be reducing the information down. However large components of the system were built on the assumption and utilisation of the different aspects of this data. This caused endless problems and seriously slowed down development. Weeks were spent pouring over documentation, changing a couple of lines, re-running code, no change, repeat, some change, new bug, repeat. A serious problem faced was the difficulty in bug fixing PyTorch code due to the black box nature of so many of the core functions. Eventually, a break through enabled the system to train successfully and produce predictions. \\
+Translating this code to fit my data was very challenging. Their \texttt{train\_loader} using the PyTorch Geometric \texttt{LinkNeighbourLoader()} did not accept their data format, and when I tried to fit it to my data, once again did not work there either. Moving forwards with the development, I had to change their data set up to accommodate my graphs. The biggest hurdle in this process was translating it from heterogeneous to homogeneous. I had assumed that this would be a straight forward process given that I would be reducing the required information. However large components of the system were built on the assumption and utilisation of the different aspects of this data. This caused endless problems and seriously slowed down development. Weeks were spent pouring over documentation, changing a couple of lines, re-running code, no change, repeat, some change, new bug, repeat. A serious problem faced was the difficulty in bug fixing PyTorch code due to the black box nature of so many of the core functions. Eventually, a break through enabled the system to train successfully and produce predictions. \\
 
-The next problem faced was the absence of negative sampling. In the provided tutiorial, this had been done by the batch loader and the link splitter, a function that divided the data into training and test sets, and so was not used in my system which was already split. This obviously resulted in extreme predictions being made due to the system not seeing any negative data. This was resolved by using PyTorch Geometric's negative sampling function and adding negative edges to both the training and the testing data sets. \\
+The next problem faced was the absence of negative sampling. In the tutorial provided, this had been done by the batch loader and the link splitter, a function that divided the data into training and test sets, and so was not used in my system which was already split. This obviously resulted in extreme predictions being made due to the system not seeing any negative data. This was resolved by using the negative sampling function of PyTorch Geometric and adding negatively weighted edges to both the training and the testing data sets. \\
 
 \subsection{Performance Evaluation}
 
-To evaluate the performance of this system I used the area under the curve (AUC) of the receiver operating characteristic curve (ROC). An ROC curve graphically represents a classification model's performance across different classification thresholds, plotting both the True Positive Rate (TPR) and the False Positive Rate (FPR). \\
+To evaluate the performance of this system I used the area under the curve (AUC) of the receiver operating characteristic (ROC) curve. An ROC curve graphically represents a classification model's performance across different classification thresholds, and is a plot of the True Positive Rate (TPR) against the False Positive Rate (FPR). \\
 
 The TPR is defined as: 
 
@@ -454,22 +366,22 @@ The TPR is defined as:
 \end{center}
 
 \vspace{10mm} 
-And the FPR is defined as: 
+and the FPR is defined as: 
 
 \begin{center}
     $\text{FPR} = \dfrac{\text{FP}}{\text{FP} + \text{TN}}$
 \end{center}
 
-The meaning of these variables is as follows. TP represents the true positives, FN represents the false negatives, FP represents false positives and TN represents true negatives. An ROC curve depicts the relationship between TPR and FPR across various classification thresholds. Decreasing the classification threshold results in more items being classified as positive, thereby elevating both False Positives and True Positives. \\ 
+where TP represents the true positives, FN represents the false negatives, FP represents false positives and TN represents true negatives. An ROC curve depicts the relationship between TPR and FPR across various classification thresholds. Decreasing the classification threshold results in more items being classified as positive, thereby elevating both False Positives and True Positives. \\ 
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\linewidth]{images/roc_auc.png}
-    \caption{image from: https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5}
+    \caption{Example of an ROC curve (in green) and the AOC shown in grey. This image is taken from the webpage: \href{https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5}{\textcolor{blue}{understanding-auc-roc-curve}}}
     \label{fig:roc_auc}
 \end{figure}
 
-To evaluate what the graph shown in \Cref{fig:roc_auc} tells us, we use the AUC, which tells us the chance that a true example would be evaluated by the model as higher than a false example. The AUC varies between 0 and 1, where an AUC of 0.0 signifies a model with predictions entirely incorrect, while an AUC of 1.0 denotes a model with predictions entirely correct. AUC is advantageous for two primary reasons: It assesses the ranking quality of predictions rather than their absolute values, and it also evaluates the model's prediction quality regardless of the chosen classification threshold. \\
+To evaluate what the graph shown in \Cref{fig:roc_auc} indicates, we use the AUC, which implies that the chance that a true example would be evaluated by the model as higher than a false example. The AUC varies between 0 and 1, where an AUC of 0.0 signifies a model with predictions entirely incorrect, while an AUC of 1.0 denotes a model with predictions entirely correct. AUC is advantageous for two primary reasons: It assesses the ranking quality of predictions rather than their absolute values, and it also evaluates the model's prediction quality regardless of the chosen classification threshold. \\
 
 \subsection{Performance Improvement}
 
@@ -559,21 +471,25 @@ Therefore, these results indicate that the system is sane, it can over-fit to da
 
 To test if this system is just learning really slowly, I ran it with 500 epochs. This resulted in it giving me a AUC score of 0.5357, which is much higher than previous runs. This would indicate that it had learned from the data better at 500 epochs than it had at five. At 1000 epochs it went back down to 0.5175, which tells that at some stage between here and 500 the system started over fitting. At this point I was very late on in my project and did not have the time available to be able to fix this problem. I believe that the solution to this problem lies in figuring out how to get batching and data loaders working for this system. I had some tinkering with this but failed to make it work and so had to move on. \\
 
+\subsection{Final Parameters}
+
+Due to these experiments and checks, the resulting GNN system to be used in answering my research will have the following features; 64 hidden channels, learning rate of 0.001 and 500 epochs. However, the system could not run on the machine available on the full graph, so a subgraph of 1000 nodes and 176826 edges in the training set and 13084 edges in the test set.\\
+
 \section{Matrix Factorisation}
 
 \subsection{Starting Building}
 
-Having learnt my lessons from the implementation of the GNN, I began my implementation of the matrix factorisation system by following a tutorial on it. The tutorial of choice this time round was a blog post by Ethan Rosenthal recommended to me by my supervisor. Ethan had previously made posts about how to implement the matrix factorisation algorithms manually, but this post that I followed was a jubilant celebration of the tools that PyTorch provide to make the whole process much more straightforward. \\
+Having learnt lessons from the implementation of the GNN, I began my implementation of the matrix factorisation system by following a tutorial. For this I followed the precess published in a blog post by Ethan Rosenthal \textcolor{red}{[ref]} recommended to me by my supervisor. Ethan had previously made posts about how to implement the matrix factorisation algorithms manually, but this post used the tools that PyTorch provide to make the whole process much simpler and more straightforward. \\
 
-This implementation faced plenty of issues and bugs, but this time I was able to much easier overcome them. Once again I encountered similar problems of the system being designed for heterogeneous data, but this time I was able to resolve this issues much quicker thanks to my prior experiences. A key benefit of this system, as compared to the GNN, was it was much less complicated and more straightforward. This, combined with the lessons learned, enabled me to swiftly break through many of the issues facing me. Some of these other issues included, adding in negative sampling again, designating node ids and evaluating performance. \\
+This implementation also faced issues and bugs, but with the experience of related problems with the GNN I was able to more easily overcome them. In particular I encountered problems of the system being designed for heterogeneous data, but this time I was able to resolve this issues more quickly thanks to my prior experiences. A key benefit of this system, as compared to the GNN, was it was much less complicated and more straightforward. This, combined with the lessons learned, enabled me to swiftly break through many of the issues including adding in negative sampling, designating node ids and evaluating performance. \\
 
 \subsection{Performance Improvement}
 
-Once working, the matrix factorisation faced similar problems to the GNN with its AUC score sitting around 0.5. Therefore I conducted a similar experiment with the hyper parameters as I did with the GNN system. For this system at this point the hyper parameters I had to change were learning rate and hidden channels, which in this system were named vector factors. with these variables I ran my tests which resulted in it being clear that 64 vector factors and a learning rate of 0.001 worked best. However, despite this combination performing best, it still only had a mean AUC score of 0.5021, which is very close to randomly guessing. \\
+Once working, the matrix factorisation faced similar problems to the GNN with its AUC score being close to 0.5. Therefore I conducted a similar experiment with the hyper parameters as with the GNN analysis. For this system at this point the hyper parameters I had to change were learning rate and hidden channels, which are termed vector factors. With these variables I re-ran the tests which resulted in it being clear that 64 vector factors and a learning rate of 0.001 worked best. However, despite this combination performing best, it still only had a mean AUC score of 0.5021, which is very close to random guessing. \\
 
-I discussed these results with my supervisor, who recommended a set of changes to improve the system. First of these was running for multiple epochs, he realised that the system I had built at this stage was not doing this obvious step. Secondly, my system was adding negative edges by concatenating them onto the positive edges. This meant that when the system walked through all the edges it would see all the positive edges and then all the negative edges. The consequences of this might be that this does something strange to the models calculations and throws it off. Therefore, the proposition was to use a data loader to shuffle the edges. An additional benefit of this data loader is that I could use it to also introduce batching to my system, a common practice in deep learning to help handle large datasets. Finally, he also recommended changing the loss function. I was using the same system as was used in the tutorial, MSELoss, but this function is used for non-binary classification. Therefore I switched over to the same system as my GNN, binary cross entropy. Binary cross entropy is the standard method of calculating loss in deep learning in binary systems and so therefore is the correct fit for this model.\\
+I discussed these results with my supervisor, who recommended a set of changes to improve the system. First of these was running for multiple epochs, he realised that the system I had built at this stage was not doing this obvious step. Secondly, my system was adding negative edges by concatenating them onto the positive edges. This meant that when the system walked through all the edges it would see all the positive edges and then all the negative edges. The consequences of this might be that this does something strange to the model calculations and throws it off. Therefore, the proposal was to use a data loader to shuffle the edges. An additional benefit of this data loader is that I could use it to also introduce batching to my system, a common practice in deep learning to help handle large datasets. Finally, he also recommended changing the loss function. I was using the same system as was used in the tutorial, MSELoss, but this function is used for non-binary classification. Therefore I switched over to the same system as my GNN, binary cross entropy. Binary cross entropy is the standard method of calculating loss in deep learning in binary systems and so therefore is mnore appropriate fit for this model.\\
 
-At this stage I should have conducted another round of hyper parameter optimization tests, particularly experimenting with batch sizes and epochs. However it was very late on in the project, and I did not have time. Conducting these experiments could have improved the system to some extent, but would probably not have significantly improved the system beyond randomly guessing. \\
+At this stage I should have conducted another round of hyper parameter optimization tests, particularly experimenting with batch sizes and epochs. However it was very late on in the project, and I did not have time. Conducting these experiments could have improved the system to some extent, but would unlikely to have significantly improved the system. \\
 
 I implemented each of these systems into my matrix factorisation model successfully. However, when I ran my system again with these changes, it still was performing around an AUC of 0.5. Therefore, I once again went on to conduct a sanity check to understand what was happening with my system. \\
 
@@ -582,6 +498,10 @@ I implemented each of these systems into my matrix factorisation model successfu
 As with the GNN the first experiment in the sanity check was testing if the system could over-fit on a graph and predict it perfectly. When ran at only five epochs, the system did not perform very well at all. However, when ran 100 times at 50 epochs, it averaged an AUC score of 0.995. This demonstrates that given enough time, this system can over-fit and learn a training set near perfectly. At a 100 epochs, it was then scoring an average of 0.999, which is pretty much perfect. Interestingly, at neither of these thresholds did it get it right every single time, which indicates that this system still was not quite getting a perfect understanding of this data even at this many epochs. \\
 
 The second step of the sanity check was to measure the ability of the system to predict missing edges on an obvious graph. To do this I used the same graph as I did with my GNN, shown in \Cref{fig:sanity_graph}. I conducted this experiment again 100 times at the base epochs of five, resulting in a perfect AUC score across these runs of 1.0. This successfully demonstrates the my system can predict obvious edges and learn from the training set about trends in the data. Therefore, we can conclude that the system is sane as it can predict both obvious missing edges, and over-fit to a training set. \\
+
+\subsection{Final Parameters}
+
+Due to these experiments and checks, the resulting matrix factorisation system to be used in answering my research will have the following features; 64 vector factors, learning rate of 0.001, shuffled edges, five epochs and binary cross entropy loss function. \\
 
 \chapter{Evaluation} 
 
@@ -595,7 +515,7 @@ Hits@K is the evaluation method used to measure the prediction capabilities of t
 
 \subsection{Process}
 
-To compare the three approaches I will evaluate them across four k values, one, five, ten, and twenty. These values will be calculated from making predictions across 100 nodes and averaging the results. The data used for this experiment will be the standard 1000 node sub graph which is used in other experiments in this paper.\\
+To compare the three approaches I will evaluate them across four k values, one, five, ten, and twenty. These values will be calculated from making predictions across 100 nodes and averaging the results. The data used for this experiment will be the standard 1000 node sub graph which is used in other experiments in this paper due to the limitations imposed by the GNN.\\
 
 \subsection{Results}
 
@@ -617,23 +537,23 @@ To compare the three approaches I will evaluate them across four k values, one, 
 
 \subsection{Discussion}
 
-The results from this experiment can be seen in \Cref{tab:rq1_results}. From these findings there is a clear best approach. Using count only not performed best overall, but also across every single K value. Weight only was the approach which had the worst performance with the combination of the two sitting between them. Interestingly, the combination of the two performed much closer to weight only than to count only. This would indicate that the weight has a significantly greater effect on this system than the counts do, and so warps the results closer to weight only. \\ 
+The results from this experiment can be seen in \Cref{tab:rq1_results}. From these findings there is a clear best approach. Using count not only performed best overall, but also across every single K value. Weight only was the approach which had the worst performance with the combination of the two sitting between them. Interestingly, the combination of the two performed much closer to weight only than to count only. This would indicate that the weight has a significantly greater effect on this system than the counts do, and so warps the results closer to weight only. \\ 
 
 Therefore, the answer to this research question is that edge count is a better metric to use in link prediction on this data set than link weight or a combination of these two. \\
 
 \section{Research Question 2}
 
-The second research question (RQ) is, how do the ABC, GNN, and matrix factorisation systems compare to each other, when predicting on a MeSh tag knowledge graph? To compare these systems ran all three of them on a common data set and evaluated them all with AUC score and my own system of evaluating their top scoring edges in the predictions. \\
+The second research question (RQ) is, how do the ABC, GNN, and matrix factorisation systems compare to each other, when predicting on a MeSh tag knowledge graph? To compare these systems I ran all three on a common data set and evaluated them all with AUC score and my own system of evaluating their top scoring edges in the predictions. \\
 
 \subsection{Data}
 
-Each of these systems were trained on the same data set. A sub-graph of 1000 nodes taken from the before 2008 graph, the same as used in RQ1 and RQ3. this ensures that each system was given the same information for learning about the data so as to create a level playing field between them. \\
+Each of these systems were trained on the same data set. A sub-graph of 1000 nodes taken from the pre-2008 graph, the same as used in RQ1 (and later for RQ3). this ensures that each system was given the same information for learning about the data so as to create a level playing field with more comparable results. Using a reduced set of the data was necessitated by the memory limits of my machine when running the GNN. \\
 
-The test data set was created more particularly. I wanted to create a reduced data set that I could then also use in RQ3 so as to allow the data to be comparable between the two experiments. I wanted to measure how well these systems could perform on nodes that they have a lot of information about. nodes they have seen a lot of edges of, and also have a lot of positive edges in the post 2008 data set. This would allow me to evaluate how these systems perform when given meaningful information to work with. \\
+The test data set was carefully curated to produce a reduced data set that could then also be used in RQ3 so as to allow the results data to be comparable between the two experiments. I wanted to measure how well these systems could perform on nodes for which there is a lot of information ind in particular nodes that have many edges in the pre-2008 set, and also have many positive edges in the post-2008 data set. This would allow me to evaluate how these systems perform when given meaningful information to work with and a significant prediction tarrget. \\
 
-To do this, I sorted the both graphs by how many edges each node has, the degree of that node. I walked through the top 100 degree nodes on each graph to find nodes were in common between them. For each of these nodes, I constructed a graph containing all the edges from that node to nodes that were non-existent in the before 2008 graph. This meant that each graph was overwhelmingly more negative than positive in edges. However, this was still the best ratio I could produce this way out of the nodes in the graph. \\ 
+To do this, I sorted the both graphs by how many edges each node has, the degree of that node. I walked through the top 100 degree nodes on each graph to find nodes were in common between them. For each of these nodes, I constructed a graph containing all the edges from that node to nodes that were non-existent in the pre-2008 graph. This meant that each graph was overwhelmingly more negative than positive in edges. However, this was still the best ratio I could produce this way out of the nodes in the graph. \\ 
 
-The result of this was across three runs, six graphs were created each time, with an average of 299 total edges and nine positive edges each. \\
+The result of this was across three runs, six graphs were created each time, with an average of 299 total edges and nine positive edges within each. \\
 
 \subsection{Metrics}
 
@@ -646,6 +566,8 @@ The secondary metric is similar in concept to the Hits@K metric previously discu
 \end{center}
 
 The purpose of evaluating only the top k guesses, is because this is a prediction system. The user is not interested in the bottom ranking values, but only in the ones that are highest ranked by the system. It is intended to be used for discovery of possible links between concepts. Therefore the highest ranking edges in the prediction are the ones of most value to the user, and so the ones most worth evaluating. \\
+
+These relative scores will be calculated for k-values 1, 10, 20, 50, and 100 so as to provide insight at a range of cuts from the predictions. \\
 
 \subsection{Results}
 
@@ -680,15 +602,15 @@ The purpose of evaluating only the top k guesses, is because this is a predictio
 
 \subsection{Discussion}
 
-Firstly, the AUC scores in \Cref{tab:rq2_auc} paint a very clear picture of the three systems. The ABC system comfortably out performed the other systems with an average score of 0.71, which is higher than any other system's highest score. Another interesting phenomenon in these results is that all three of them performed best on run 1 and worst on run 3. This means that as one system finds a graph more difficult to predict, so to do others, indicating that they might be evaluating them using similar metrics. The purpose of building the machine learning systems is that despite taking longer to train, they are supposed to be able to out-perform traditional algorithmic systems like ABC. However, as mentioned before, ABC was clear of the other two systems. Trailing in last place was matrix factorisation which only just broke even with a randomly guessing system in AUC score. \\
+Firstly, the AUC scores in \Cref{tab:rq2_auc} paint a very clear picture of the three systems. The ABC system comfortably out performed the other systems with an average score of 0.71, which is higher than any other system's highest score. Another interesting phenomenon in these results is that all three of them performed best on run 1 and worst on run 3. This means that as one system finds a graph more difficult to predict, so to do others, indicating that they might be evaluating them using similar metrics. The purpose of building the machine learning systems is that despite taking longer to train, they are supposed to be able to out-perform traditional algorithmic systems like ABC. However it is clear that for this test set this has not been achieved for reasons that are not clear. This culd be that the training and test set were too small to allow the power of machine-learning to be realised. Trailing in last place was matrix factorisation which only just broke even with a randomly guessing system in AUC score. \\
 
-The trends seen in the AUC scores are supported in the relative scores \Cref{tab:rq2_rsa}. Once again, the ABC system performs best on average and the matrix factorisation system is worst, being very close to a randomly guessing system. Some interesting outliers in these results, such as the ABC system having a score of 10.36 at a k-value of 1. On further exploration of this result I found that of the 18 different graphs it evaluated, the edge it ranked top was right, five times, as compared to only once by each of the other two systems. This makes for a rather exaggerated relative score, but is still very useful as the top returned result is the one that researchers will be most interested in. As the k value increased, so to did the relative scores decrease on average. This could be due to two possible reasons, the data sample is getting larger and so maybe the metric is normalising closer to how the systems are actually performing, or it could be that the systems are better at guessing the more obvious edges than getting the more difficult shouts right, and so perform better if a smaller slice of the results is taken. If the first of those two is true we would expect to see, among the smaller k-values, results both above and below the scores at larger k-values. However, it is a fairly consistent decrease as the k-values increase, indicating that the second of the two possibilities is more plausible. \\
+The trends seen in the AUC scores are supported in the relative scores \Cref{tab:rq2_rsa}. Once again, the ABC system performs best on average and the matrix factorisation system is worst, being very close to a randomly guessing system. Some interesting outliers in these results, such as the ABC system having a score of 10.36 at a k-value of 1. On further exploration of this result I found that of the 18 different graphs it evaluated, the edge it ranked top was right, five times, as compared to only once by each of the other two systems. This makes for a rather exaggerated relative score, but is still very useful as the top returned result is the one that researchers will be most interested in. As the k value increased, so to did the relative scores decrease on average. This could be due to two possible reasons, the data sample is getting larger and so maybe the metric is normalising closer to how the systems are actually performing, or it could be that the systems are better at guessing the more obvious edges than getting the more difficult shouts right, and so perform better if a smaller number of the results are used for evaluation. If the first of those two is true we would expect to see, among the smaller k-values, results both above and below the scores at larger k-values. However, it is a fairly consistent decrease as the k-values increase, indicating that the second of the two possibilities is more plausible. \\
 
-To answer the question, both metrics conclude that ABC is the best of the three systems, and that matrix factorisation is, not only the worst, but also not any better than a randomly guessing system. \\
+To answer the research  question, both metrics conclude that ABC is the best of the three systems, and that matrix factorisation is, not only the worst, but also not any better than a randomly guessing system. \\
 
 \section{Research Question 3}
 
-The third research question (RQ) is, How do the various possible combinations of the ABC, GNN, matrix factorisation systems compare to each other and to these systems individually? Between these three systems there will be four combinations, ABC and GNN, GNN and matrix factorisation, matrix factorisation and ABC, and all three of them combined. I will use the same secondary system I used to evaluate RQ2 to compare these systems to each other and to the individual systems. \\
+The third research question (RQ) is, How do the various possible combined use of the ABC, GNN, matrix factorisation systems compare to each other and to these systems individually? Between these three systems there will be four combinations, ABC and GNN, GNN and matrix factorisation, matrix factorisation and ABC, and all three of them combined. I will use the same secondary system I used to evaluate RQ2 to compare these systems to each other and to the individual systems. \\
 
 \subsection{Data}
 
@@ -701,37 +623,103 @@ Once again, each of these systems were trained on the same data set of a sub-gra
     \label{fig:venn}
 \end{figure}
 
-To get the combination of these systems, I took, for each k-value, the common ground of the predictions from the involved systems. I labelled each of these combinations C1 to C4, as can be seen in \Cref{fig:venn}. Score predictions of each predicted edge were not combined between system because the ABC system scored edges very differently to the other two systems, which would create an unbalanced combination system as seen in the results of RQ1. Therefore, the overlap between the top k predictions was taken instead, which further leans into the systems being used as discovery systems. \\
+To get the combined prediction of these systems, I took, for each k-value, the common ground or \textit{intersection} of the predictions from each the systems within a particular combination. I labelled each of these combinations C1 to C4, as can be seen in \Cref{fig:venn}. Score predictions of each predicted edge were not combined between system because the ABC system scored edges very differently to the other two, which would create an unbalanced combination measure as seen in the results of RQ1. Therefore, the overlap between the top k predictions was taken instead, which further enhances the performance of the systems being used as discovery systems. \\
 
 \subsection{Metrics}
 
-Because of the vastly reduced datasets caused by only taking the overlap of the top k predictions, an overall evaluation using AUC is no longer useful. Therefore, the only metric that will be used to evaluate these combinations is the relative score metric defined in for RQ2. 
+Because of the vastly reduced datasets caused by only taking the overlap of the top k predictions, an overall evaluation using AUC is no longer useful. Therefore, the only metric that will be used to evaluate these combinations is the relative score metric defined in for RQ2. These values will be calculated for k-values 20, 50, and 100 as 1 and 10 will return so few overlapping values that they will not provide any meaningful data.\\
+
+\subsection{Results}
+
+\begin{table}[h]
+    \centering
+    \caption{RQ3 Average Edges in common}
+    \label{tab:rq3_common}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    & \multicolumn{3}{|c|}{k value}\\ \hline
+    \textbf{System} & \textbf{20} & \textbf{50} & \textbf{100} \\ \hline
+    C1 & 5.056 & 18.722 & 50.111  \\ \hline
+    C2 & 1.556 & 9.111 & 35.111\\ \hline
+    C3 & 1.556 & 8.389 & 34.111\\ \hline
+    C4 & 0.556 & 3.722 & 18.055\\ \hline
+    Mean & 2.181 & 9.986 & 34.347\\ \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{RQ3 Average Edges Correct}
+    \label{tab:rq3_correct}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    & \multicolumn{3}{|c|}{k value} \\ \hline
+    \textbf{System} & \textbf{20} & \textbf{50} & \textbf{100}\\ \hline
+    ABC & 1.611 & 3.722 & 6.444 \\ \hline
+    GNN & 1.333 & 3.167 & 5.389 \\ \hline
+    Matrix Factorisation & 0.722 & 2.111 & 4.556 \\ \hline
+    C1 & 0.5 & 1.556 & 3.778 \\ \hline
+    C2 & 0.167 & 0.556 & 1.833 \\ \hline
+    C3 & 0.111 & 0.444 & 2.167 \\ \hline
+    C4 & 0.111 & 0.333 & 1.333 \\ \hline
+    Mean & 0.650 & 1.698 & 3.643 \\ \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \caption{RQ3 Average Relative scores}
+    \label{tab:rq3_score}
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    & \multicolumn{3}{|c|}{k value} & \\ \hline
+    \textbf{System} & \textbf{20} & \textbf{50} & \textbf{100} & \textbf{Mean}\\ \hline
+    ABC & 2.219 & 1.886 & 1.604 & 1.903\\ \hline
+    GNN & 1.582 & 1.456 & 1.286 & 1.44\\ \hline
+    Matrix Factorisation & 0.858 & 1.001 & 1.079 & 0.979\\ \hline
+    C1 & 1.792 & 1.709 & 1.892 & 1.798\\ \hline
+    C2 & 1.452 & 1.358 & 1.188 & 1.333\\ \hline
+    C3 & 0.800 & 1.232 & 1.437 & 1.156\\ \hline
+    C4 & 1.534 & 1.859 & 1.631 & 1.675\\ \hline
+    Mean & 1.463 & 1.500 & 1.445 & \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Discussion}
+
+First, to put in context all of the results we first examine the three systems on their own. In \Cref{tab:rq3_score}, we can see that once again, ABC has performed best and matrix factorisation is worst and is basically randomly guessing. These three systems are not included in \Cref{tab:rq3_common} as they will always have the full k-values. This is also why in \Cref{tab:rq3_correct} the three systems have massively more correct edges in their selection, simply due to the difference in total edges. \\
+
+Looking at \Cref{tab:rq3_common}, we can see that at almost every value of k, every system had less than half of their edges in common with each other and often, significantly less. The biggest reduction was C4, which is all systems combined, with a k-value of 20 going down to 0.556 edges on average which is less than 3\% of an overlap of 20. As k increases, so to does the proportion of edges in common between systems. This would mean that the top few ranked edges by each of these systems are very rarely the same, which tells us that, despite similar trends between systems on each run seen in RQ2, the top ranked predictions rarely match. \\
+
+Examining the scores themselves in \Cref{tab:rq3_score}, there are a few interesting trends to identify. Firstly, the influence of matrix factorisation on any combination is clearly negative. In particular, the common ground between matrix factorisation and ABC is particularly bad, despite the ABC system performing best. Even the combination combination of GNN and matrix factorisation is better, perhaps because their prediction systems have more in common. \\
+
+The best performing combination is C1, or the GNN and ABC overlap. This is not particularly surprising given that these are the best two systems, however, as seen when comparing C3 and C4, the quality of the individual systems does not necessarily define the quality of the overlap. Not only is C1 the best combination, but at a k-value of 100, it is the best system overall. This is an interesting phenomenon, where the combination of these two systems has not resulted in an averaging of them but instead, an improving on their individual predictions. At this value, C1 meaningfully reduces the total edges from 100 to 50, and increases the quality of these 50 by increasing the hit rate of these edges as compared to other systems. \\
+
+Overall, the best performing system on average is the ABC system and so none of the combinations can be said to be clear improvements on it. However, this is largely influenced by its score at a k-value of 20, the smallest data set and so the least meaningful result accordingly. An interesting system to examine further is C4, the combination of all three systems, taking only edges found in all of their top k results. The expectation would be that this system gets dragged down by matrix factorisation and fails to compete with either ABC or C1 on score. However, at a k-value of 50, it performs almost as well as the top system, ABC, and is clear of any other system, individual or combined. Furthermore, with a k-value of 100, this system performs better than any of the individual systems, but is ultimately not able to match C1. At this k, it seems to benefit from the additional value generated by C1, but then loses some of it when having to involve matrix factorisation. \\
 
 \chapter{Conclusion}    
+
+\section{Summary}
+
+With this project I successfully examined some aspects of using MeSH tags for literature based discovery. I created a knowledge graph representing the co-occurrence of the tags in articles. This stage of the process went smoothly, and resulted in the desired outcome without any problems. \\
+
+The next of this project was the implementation of the three systems. Once again, the implementation of the ABC system went smoothly, but issues started to arise with the GNN. A lot of time was lost in this project in trying to learn and work with PyTorch. If doing this project again I would make sure to start learning and practicing with PyTorch from much earlier in development to allow for this stage to go more smoothly. Another mistake I made at this stage of the project was conducting my fine tuning before my sanity checks. Because of this, the findings from the sanity checks could not be implemented into the fine tuning tests, and so the results from the hyper parameter tuning lost some relevance and accuracy. \\
+
+The evaluations conducted for the research questions produced the necessary results to deliver a meaningful answer to each question within the reduced dataset could be used with the compute hardware available. Evaluation of the ABC system enabled us to learn that the \textit{number} of articles that two tags appear in together is no more useful than the fact there is a link (i.e. each link should have a weight of 1) as information for the ABC system to use when making predictions. When comparing the three systems against each other, both metrics provide the conclusion that the ABC system performs best and the matrix factorisation is the worst. This is a good sign for the use of MeSH tags for LBD, as it should be possible to create a machine learning system that outperforms a simple algorithm like this. The results from the combination of the three systems did not however deliver clear conclusions on which combinations if any would improve performance. While the combinations, in particular the union of the ABC and GNN systems, did not outperform the ABC system, they did manage to perform better than just the average of the two systems individually. Therefore, combining such systems could well be an interesting avenue of research. \\
+
+\section{Future Work}
+
+There are several interesting ways this research can be taken further. First of all, utilising the tree structure of the MeSH tags to automatically assign additional information to the graph could be an excellent way to develop the data. Using this system it should be possible to accurately identify nodes that are drugs, chemicals or diseases among others. Furthermore, once nodes have been have been categorised this way, edges could then be labelled according to the relationship that they represent between the nodes. This would result in a heterogeneous graph and so would also require changing all of the systems to utilise the additional information in their training and prediction processes. \\
+
+Given the performance of the ABC system in comparison to the GNN, I believe that it should be possible to significantly develop this system. Given more time to tinker with the system, and more experience with PyTorch when doing so, the performance of such a system should be able to eclipse the ABC system. \\
+
+If these two can both be done, then, with appropriate resources, they could well be combined to create an LBD system that can be compared to other research in the field. This would then pull together this exploration of using MeSH tags for LBD. \\
 
 \begin{appendices}
 
 \chapter{Appendices}
 
-Typical inclusions in the appendices are:
-
-\begin{itemize}
-\item
-  Copies of ethics approvals (required if obtained)
-\item
-  Copies of questionnaires etc. used to gather data from subjects.
-\item
-  Extensive tables or figures that are too bulky to fit in the main body of
-  the report, particularly ones that are repetitive and summarised in the body.
-
-\item Outline of the source code (e.g. directory structure), or other architecture documentation like class diagrams.
-
-\item User manuals, and any guides to starting/running the software.
-
-\end{itemize}
-
-\textbf{Don't include your source code in the appendices}. It will be
-submitted separately.
+There are no appendices. 
 
 \end{appendices}
 
